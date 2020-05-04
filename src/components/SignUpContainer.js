@@ -14,7 +14,7 @@ const SignUpContainer = () => {
   const idEl = useRef(null);
   const pwdEl = useRef(null);
   const confirmPwdEl = useRef(null);
-  const nameEl = useRef(null);
+  // const nameEl = useRef(null);
   const emailEl = useRef(null);
   const tokenEl = useRef(null);
   const thumbnailEl = useRef(null);
@@ -29,7 +29,7 @@ const SignUpContainer = () => {
   const [id, setId] = useState(""); // 아이디
   const [pwd, setPwd] = useState(""); // 암호
   const [confirmPwd, setConfirmPwd] = useState(""); // 암호 확인
-  const [name, setName] = useState(""); // 닉네임
+  // const [name, setName] = useState(""); // 닉네임
   const [email, setEmail] = useState(""); // 이메일
   const [validateEmail, setValidateEmail] = useState(true); // 이메일 형식 정합 유무
   const [confirmEmailToken, setConfirmEmailToken] = useState(""); // 이메일 인증번호
@@ -39,8 +39,7 @@ const SignUpContainer = () => {
   const onChangeId = useCallback(e => {
     const isValidate = validateText(e.target.value, {
       isNotAllowBlank: true,
-      isNotAllowSpecial: true,
-      isNotAllowKorean: true
+      isNotAllowSpecial: true
     });
     if (!isValidate) {
       setId(e.target.value);
@@ -54,7 +53,7 @@ const SignUpContainer = () => {
     []
   );
 
-  const onChangeName = useCallback(e => setName(e.target.value), []);
+  // const onChangeName = useCallback(e => setName(e.target.value), []);
 
   const onChangeEmail = useCallback(e => {
     setEmail(e.target.value);
@@ -153,10 +152,6 @@ const SignUpContainer = () => {
       pwdEl.current.focus();
       return;
     }
-    if (!name) {
-      alert("이름을 입력하세요.");
-      return;
-    }
     if (!email) {
       alert("이메일을 입력하세요.");
       emailEl.current.focus();
@@ -181,7 +176,6 @@ const SignUpContainer = () => {
       payload: {
         id,
         pwd,
-        name,
         email,
         selectedFile
       }
@@ -191,7 +185,6 @@ const SignUpContainer = () => {
     confirmedId,
     pwd,
     confirmPwd,
-    name,
     email,
     emailToken,
     confirmEmailToken,
@@ -208,8 +201,6 @@ const SignUpContainer = () => {
       pwdEl={pwdEl}
       confirmPwd={confirmPwd}
       confirmPwdEl={confirmPwdEl}
-      name={name}
-      nameEl={nameEl}
       email={email}
       emailEl={emailEl}
       validateEmail={validateEmail}
@@ -224,7 +215,6 @@ const SignUpContainer = () => {
       onChangeId={onChangeId}
       onChangePwd={onChangePwd}
       onChangeConfirmPwd={onChangeConfirmPwd}
-      onChangeName={onChangeName}
       onChangeEmail={onChangeEmail}
       onChangeConfirmEmailToken={onChangeConfirmEmailToken}
       onChangeThumbnail={onChangeThumbnail}

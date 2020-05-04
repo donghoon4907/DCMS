@@ -7,22 +7,24 @@ import {
 } from "../reducers/common";
 import {
   ADD_PROGRAMITEM_REQUEST,
-  GET_DETAILGENRELIST_REQUEST,
   UPDATE_PROGRAMITEM_REQUEST,
   INACTIVE_PROGRAMITEM
 } from "../reducers/program";
+import { GET_DETAILGENRELIST_REQUEST } from "../reducers/genre";
 import moment from "moment";
 
 const SetProgramModalContainer = () => {
   const dispatch = useDispatch();
   const {
-    loadedGenre, // 불러온 전체 장르 목록
     loadedAgeGrade, // 불러온 전체 연령 등급 목록
-    loadedDetailGenre, // 불러온 세부 장르 목록
-    loadedChannel, // 불러온 전체 채널 목록
-    isGetDetailGernreListLoading, // 세부 장르 로드중 여부
     activeProgram // 선택된 프로그램 ( 수정 여부 판단 )
   } = useSelector(state => state.program);
+  const {
+    loadedGenre,
+    loadedDetailGenre,
+    isGetDetailGenreListLoading
+  } = useSelector(state => state.genre);
+  const { loadedChannel } = useSelector(state => state.channel);
 
   const titleEl = useRef(null);
   const descriptionEl = useRef(null);
@@ -225,7 +227,7 @@ const SetProgramModalContainer = () => {
       } = activeProgram;
       setType("수정");
       setTitle(title);
-      setDescription(description);
+      setDescription(description || "");
       setThumbnail(
         `${process.env.REACT_APP_BACKEND_HOST}/images/${Images[0].src}`
       );
@@ -275,7 +277,7 @@ const SetProgramModalContainer = () => {
       onChangeAgeGrade={onChangeAgeGrade}
       onChangeChannel={onChangeChannel}
       onSubmit={onSubmit}
-      isGetDetailGernreListLoading={isGetDetailGernreListLoading}
+      isGetDetailGenreListLoading={isGetDetailGenreListLoading}
     />
   );
 };

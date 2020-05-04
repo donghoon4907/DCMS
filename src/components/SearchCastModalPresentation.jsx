@@ -55,7 +55,6 @@ const SearchCastModalPresentation = ({
             <th>선택</th>
             <th>출연자명</th>
             <th>본명</th>
-            {/* <th>역할명</th> */}
           </tr>
         </thead>
         <tbody>
@@ -65,27 +64,19 @@ const SearchCastModalPresentation = ({
                 <td colSpan={3}>검색 결과가 없습니다.</td>
               </tr>
             ) : (
-              searchedCast.map(({ id, name, real_name }, idx) => (
-                <tr key={id}>
+              searchedCast.map(({ id, castName, realName }) => (
+                <tr key={`searchCast${id}`}>
                   <td>
                     <Form.Check
                       name={"castCheck"}
                       value={id}
                       type={"radio"}
-                      data-nm={name}
-                      data-realnm={real_name}
+                      data-nm={castName}
+                      data-realnm={realName}
                     />
                   </td>
-                  <td>{name}</td>
-                  <td>{real_name}</td>
-                  {/* <td>
-                    <FormControl
-                      placeholder="역할명을 입력하세요."
-                      style={{ height: 25 }}
-                      data-id={id}
-                      ref={el => (roleEl.current[idx] = el)}
-                    />
-                  </td> */}
+                  <td>{castName}</td>
+                  <td>{realName}</td>
                 </tr>
               ))
             )

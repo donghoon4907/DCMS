@@ -173,10 +173,10 @@ const SetContentModalPresentaion = ({
                 </tr>
               )}
               {selectedCast &&
-                selectedCast.map(({ id, name, real_name }) => (
-                  <tr key={id}>
-                    <td>{name}</td>
-                    <td>{real_name}</td>
+                selectedCast.map(({ id, castName, realName }) => (
+                  <tr key={`selectedCast${id}`}>
+                    <td>{castName}</td>
+                    <td>{realName}</td>
                     <td>
                       <Remove
                         style={{ width: 20, height: 20 }}
@@ -194,7 +194,7 @@ const SetContentModalPresentaion = ({
             style={{ width: 150 }}
             className="form-control"
             selected={broadcastDate}
-            onChange={(date) => setBroadcastDate(date)}
+            onChange={date => setBroadcastDate(date)}
             isClearable
             placeholderText="입력하세요."
             timeFormat="HH:mm"

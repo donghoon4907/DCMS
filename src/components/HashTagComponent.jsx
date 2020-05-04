@@ -4,15 +4,25 @@ import "@pathofdev/react-tag-input/build/index.css";
 
 const HashTagComponent = ({ tags, setTags }) => {
   const onChange = useCallback(
-    (newTags) => {
+    newTags => {
+      // 중복 여부 검증
+      const isDup = tags.some(v =>
+        newTags.some(v2 => {
+          if (v2.includes("#")) return false;
+          return v === `#${v2}`;
+        })
+      );
+
+      if (isDup) return alert("이미 추가된 태그입니다.");
+
       setTags(
-        newTags.map((v) => {
+        newTags.map(v => {
           if (v.includes("#")) return v;
           return `#${v}`;
         })
       );
     },
-    [setTags]
+    [tags, setTags]
   );
 
   return (

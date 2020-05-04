@@ -90,7 +90,7 @@ export const CardWrap = styled.div`
   margin-right: ${props => props.theme.betweenCardMargin}px;
   margin-bottom: ${props => props.theme.betweenCardMargin}px;
   font-size: 12px;
-  background: #2a3241;
+  background: ${props => props.theme.cardBgColor};
 
   & ~ & {
     margin-right: ${props => props.theme.betweenCardMargin}px;

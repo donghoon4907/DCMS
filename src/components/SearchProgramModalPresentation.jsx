@@ -79,7 +79,7 @@ const SearchProgramModalPresentation = ({
                       />
                     </td>
                     <td>{title}</td>
-                    <td>{Channel.name}</td>
+                    <td>{Channel.channelName}</td>
                     <td>{product_year}</td>
                     <td>{User.userId}</td>
                   </tr>

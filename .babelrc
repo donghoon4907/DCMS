@@ -1,6 +1,9 @@
 {
   "presets": [
-    ["@babel/preset-env", { "modules": false, "useBuiltIns": "entry" }],
+    [
+      "@babel/preset-env",
+      { "modules": false, "corejs": "2", "useBuiltIns": "entry" }
+    ],
     "@babel/preset-react"
   ],
   "plugins": [

@@ -4,6 +4,7 @@ import { SubMenu, SubMenuItem, Article } from "./PublishStyledComponent";
 import ArticleComponent from "./ArticleComponent";
 
 const PublishPresentaion = ({
+  sortList,
   isLoadingPgm,
   isLoadingContent,
   isLoadingPost,
@@ -42,9 +43,6 @@ const PublishPresentaion = ({
   onClickAddProgramBtn,
   onClickAddContentBtn,
   onClickAddPostBtn,
-  onClickPgmItem,
-  onClickContentItem,
-  onClickPostItem,
   onKeyDownPgmSearchKeyword,
   onKeyDownContentSearchKeyword,
   onKeyDownPostSearchKeyword,
@@ -80,6 +78,7 @@ const PublishPresentaion = ({
       <ArticleComponent
         type={"프로그램"}
         isActive={activeMenu === 1}
+        sortList={sortList}
         isLoadingData={isLoadingPgm}
         loadedData={loadedProgram}
         loadedChannel={loadedChannel}
@@ -94,7 +93,6 @@ const PublishPresentaion = ({
         onChangeSort={onChangePgmSort}
         onChangeChannel={onChangePgmChannel}
         onClickAddBtn={onClickAddProgramBtn}
-        onClickItem={onClickPgmItem}
         onKeyDownSearchKeyword={onKeyDownPgmSearchKeyword}
         onClickSearchBtn={onClickPgmSearchBtn}
         onScrollInList={onScrollInPgmList}
@@ -102,6 +100,7 @@ const PublishPresentaion = ({
       <ArticleComponent
         type={"콘텐츠"}
         isActive={activeMenu === 2}
+        sortList={sortList}
         isLoadingData={isLoadingContent}
         loadedData={loadedContent}
         startDate={contentStartDate}
@@ -113,7 +112,6 @@ const PublishPresentaion = ({
         onChangeSearchKeyword={onChangeContentSearchKeyword}
         onChangeSort={onChangeContentSort}
         onClickAddBtn={onClickAddContentBtn}
-        onClickItem={onClickContentItem}
         onKeyDownSearchKeyword={onKeyDownContentSearchKeyword}
         onClickSearchBtn={onClickContentSearchBtn}
         onScrollInList={onScrollInContentList}
@@ -121,6 +119,7 @@ const PublishPresentaion = ({
       <ArticleComponent
         type={"포스트"}
         isActive={activeMenu === 3}
+        sortList={sortList}
         isLoadingData={isLoadingPost}
         loadedData={loadedPost}
         startDate={postStartDate}
@@ -132,7 +131,6 @@ const PublishPresentaion = ({
         onChangeSearchKeyword={onChangePostSearchKeyword}
         onChangeSort={onChangePostSort}
         onClickAddBtn={onClickAddPostBtn}
-        onClickItem={onClickPostItem}
         onKeyDownSearchKeyword={onKeyDownPostSearchKeyword}
         onClickSearchBtn={onClickPostSearchBtn}
         onScrollInList={onScrollInPostList}
@@ -143,31 +141,52 @@ const PublishPresentaion = ({
 export default PublishPresentaion;
 
 PublishPresentaion.propTypes = {
+  sortList: PropTypes.arrayOf(
+    PropTypes.shape({
+      text: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired
+    })
+  ),
   isLoadingPgm: PropTypes.bool.isRequired,
+  isLoadingContent: PropTypes.bool.isRequired,
   isLoadingPost: PropTypes.bool.isRequired,
-  // loadedProgram,
-  // loadedPost: PropTypes.arrayOf(PropTypes.shape({})),
   activeMenu: PropTypes.number.isRequired,
   pgmStartDate: PropTypes.object.isRequired,
+  contentStartDate: PropTypes.object.isRequired,
   postStartDate: PropTypes.object.isRequired,
   pgmEndDate: PropTypes.object.isRequired,
+  contentEndDate: PropTypes.object.isRequired,
   postEndDate: PropTypes.object.isRequired,
   setPgmStartDate: PropTypes.func.isRequired,
+  setContentStartDate: PropTypes.func.isRequired,
   setPostStartDate: PropTypes.func.isRequired,
   setPgmEndDate: PropTypes.func.isRequired,
+  setContentEndDate: PropTypes.func.isRequired,
   setPostEndDate: PropTypes.func.isRequired,
   pgmSearchKeyword: PropTypes.string.isRequired,
+  contentSearchKeyword: PropTypes.string.isRequired,
   postSearchKeyword: PropTypes.string.isRequired,
   pgmSort: PropTypes.string.isRequired,
+  contentSort: PropTypes.string.isRequired,
   postSort: PropTypes.string.isRequired,
   onChangePgmSearchKeyword: PropTypes.func.isRequired,
+  onChangeContentSearchKeyword: PropTypes.func.isRequired,
   onChangePostSearchKeyword: PropTypes.func.isRequired,
   onChangePgmSort: PropTypes.func.isRequired,
+  onChangeContentSort: PropTypes.func.isRequired,
   onChangePostSort: PropTypes.func.isRequired,
+  onChangePgmChannel: PropTypes.func.isRequired,
   onClickSubMenuItem: PropTypes.func.isRequired,
-  onClickAddPostBtn: PropTypes.func.isRequired,
   onClickAddProgramBtn: PropTypes.func.isRequired,
-  onClickPgmItem: PropTypes.func.isRequired,
+  onClickAddContentBtn: PropTypes.func.isRequired,
+  onClickAddPostBtn: PropTypes.func.isRequired,
   onKeyDownPgmSearchKeyword: PropTypes.func.isRequired,
-  onClickPgmSearchBtn: PropTypes.func.isRequired
+  onKeyDownContentSearchKeyword: PropTypes.func.isRequired,
+  onKeyDownPostSearchKeyword: PropTypes.func.isRequired,
+  onClickPgmSearchBtn: PropTypes.func.isRequired,
+  onClickContentSearchBtn: PropTypes.func.isRequired,
+  onClickPostSearchBtn: PropTypes.func.isRequired,
+  onScrollInPgmList: PropTypes.func.isRequired,
+  onScrollInContentList: PropTypes.func.isRequired,
+  onScrollInPostList: PropTypes.func.isRequired
 };

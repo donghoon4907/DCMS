@@ -37,6 +37,14 @@ export const HIDE_SEARCHPROGRAMMODAL = "HIDE_SEARCHPROGRAMMODAL";
 export const SHOW_SEARCHCASTMODAL = "SHOW_SEARCHCASTMODAL";
 // 출연진 검색 모달 숨기기
 export const HIDE_SEARCHCASTMODAL = "HIDE_SEARCHCASTMODAL";
+// 포스트 댓글 모달 보이기
+export const SHOW_POSTCOMMENTMODAL = "SHOW_POSTCOMMENTMODAL";
+// 포스트 댓글 모달 숨기기
+export const HIDE_POSTCOMMENTMODAL = "HIDE_POSTCOMMENTMODAL";
+// 유튜브 업로드 모달 보이기
+export const SHOW_ADDUPLOADVIDEOMODAL = "SHOW_ADDUPLOADVIDEOMODAL";
+// 유튜브 업로드 모달 숨기기
+export const HIDE_ADDUPLOADVIDEOMODAL = "HIDE_ADDUPLOADVIDEOMODAL";
 
 export const initialState = {
   isShowLoginUi: false, // 로그인 화면 보이기 유무
@@ -48,11 +56,13 @@ export const initialState = {
   isShowAddPostUi: false, // 포스트 추가 화면 보이기 유무
   isShowUpdatePostUi: false, // 포스트 수정 화면 보이기 유무
   isShowSearchPgmUi: false, // 프로그램 검색 화면 보이기 유무
-  isShowSearchCastUi: false // 출연진 검색 화면 보이기 유무
+  isShowSearchCastUi: false, // 출연진 검색 화면 보이기 유무
+  isShowPostCommentUi: false, // 포스트 댓글 팝업 화면 보이기 유무
+  isShowYoutubeUploadUi: false // 유튜브 업로드 팝업 화면 보이기 유무
 };
 
 export default (state = initialState, action) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     switch (action.type) {
       case SHOW_LOGINLAYER: {
         draft.isShowLoginUi = true;
@@ -131,6 +141,22 @@ export default (state = initialState, action) =>
       }
       case HIDE_SEARCHCASTMODAL: {
         draft.isShowSearchCastUi = false;
+        break;
+      }
+      case SHOW_POSTCOMMENTMODAL: {
+        draft.isShowPostCommentUi = true;
+        break;
+      }
+      case HIDE_POSTCOMMENTMODAL: {
+        draft.isShowPostCommentUi = false;
+        break;
+      }
+      case SHOW_ADDUPLOADVIDEOMODAL: {
+        draft.isShowYoutubeUploadUi = true;
+        break;
+      }
+      case HIDE_ADDUPLOADVIDEOMODAL: {
+        draft.isShowYoutubeUploadUi = false;
         break;
       }
       default:

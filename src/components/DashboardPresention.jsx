@@ -15,6 +15,9 @@ import SetPostModal from "./SetPostModalContainer";
 import SearchProgramModal from "./SearchProgramModalContainer";
 import SearchCastModal from "./SearchCastModalContainer";
 import PublishContainer from "./PublishContainer";
+import PostCommentModal from "./PostCommentModalContainer";
+import SettingContainer from "./SettingContainer";
+import UploadYoutubeModal from "./UploadYoutubeModalContainer";
 
 const DashboardPresentation = ({
   userInfo,
@@ -27,6 +30,8 @@ const DashboardPresentation = ({
   isShowUpdatePostUi,
   isShowSearchPgmUi,
   isShowSearchCastUi,
+  isShowPostCommentUi,
+  isShowYoutubeUploadUi,
   onClickMenuIcon,
   onLogout
 }) => (
@@ -91,6 +96,7 @@ const DashboardPresentation = ({
         </div>
       </TopMenu>
       {activeMenu === 2 && <PublishContainer />}
+      {activeMenu === 3 && <SettingContainer />}
     </ContentMenu>
     {(isShowAddPgmUi || isShowUpdatePgmUi) && <SetProgramModal />}
     {(isShowAddContentUi || isShowUpdateContentUi) && <SetContentModal />}
@@ -98,28 +104,22 @@ const DashboardPresentation = ({
     {isShowSearchPgmUi && <SearchProgramModal />}
     {isShowSearchPgmUi && <SearchProgramModal />}
     {isShowSearchCastUi && <SearchCastModal />}
+    {isShowPostCommentUi && <PostCommentModal />}
+    {isShowYoutubeUploadUi && <UploadYoutubeModal />}
   </Container>
 );
 
 export default DashboardPresentation;
 
 DashboardPresentation.propTypes = {
-  userInfo: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    userId: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
-    Images: PropTypes.arrayOf(
-      PropTypes.shape({
-        src: PropTypes.string.isRequired
-      })
-    )
-  }),
   activeMenu: PropTypes.number.isRequired,
   isShowAddPostUi: PropTypes.bool.isRequired,
   isShowAddPgmUi: PropTypes.bool.isRequired,
   isShowUpdatePgmUi: PropTypes.bool.isRequired,
   isShowSearchPgmUi: PropTypes.bool.isRequired,
+  isShowSearchCastUi: PropTypes.bool.isRequired,
+  isShowPostCommentUi: PropTypes.bool.isRequired,
+  isShowYoutubeUploadUi: PropTypes.bool.isRequired,
   onClickMenuIcon: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired
 };

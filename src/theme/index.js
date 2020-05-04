@@ -4,6 +4,7 @@ export default {
   contentBgColor: "#323A45", // 내용 배경색
   borderColor: "#DEE2E6", // 입력창 테두리색
   cardBorderColor: "#78859E", // 카드형 테두리색
+  cardBgColor: "#222222", // 카드형 배경색
   asideMenuWidth: 50, // 메뉴바 너비
   betweenCardMargin: 30 // 카드 사이 공간 너비
 };

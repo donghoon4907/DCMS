@@ -23,6 +23,26 @@ export const LOG_OUT_FAILURE = "LOG_OUT_FAILURE";
 export const LOAD_USER_REQUEST = "LOAD_USER_REQUEST";
 export const LOAD_USER_SUCCESS = "LOAD_USER_SUCCESS";
 export const LOAD_USER_FAILURE = "LOAD_USER_FAILURE";
+// 팔로잉 추가
+export const ADD_FOLLOWING_REQUEST = "ADD_FOLLOWING_REQUEST";
+export const ADD_FOLLOWING_SUCCESS = "ADD_FOLLOWING_SUCCESS";
+export const ADD_FOLLOWING_FAILURE = "ADD_FOLLOWING_FAILURE";
+// 팔로잉 삭제
+export const REMOVE_FOLLOWING_REQUEST = "REMOVE_FOLLOWING_REQUEST";
+export const REMOVE_FOLLOWING_SUCCESS = "REMOVE_FOLLOWING_SUCCESS";
+export const REMOVE_FOLLOWING_FAILURE = "REMOVE_FOLLOWING_FAILURE";
+// 목록 가져오기
+export const GET_USERLIST_REQUEST = "GET_USERLIST_REQUEST";
+export const GET_USERLIST_SUCCESS = "GET_USERLIST_SUCCESS";
+export const GET_USERLIST_FAILURE = "GET_USERLIST_FAILURE";
+// 팔로워 목록 가져오기
+export const GET_FOLLOWERLIST_REQUEST = "GET_FOLLOWERLIST_REQUEST";
+export const GET_FOLLOWERLIST_SUCCESS = "GET_FOLLOWERLIST_SUCCESS";
+export const GET_FOLLOWERLIST_FAILURE = "GET_FOLLOWERLIST_FAILURE";
+// 목록 초기화
+export const INIT_USERLIST = "INIT_USERLIST";
+// 팔로워 목록 초기화
+export const INIT_FOLLOWERLIST = "INIT_FOLLOWERLIST";
 
 export const initialState = {
   isDbCheckLoading: false, // 중복 확인 시도 중 여부
@@ -31,15 +51,25 @@ export const initialState = {
   isLogInLoading: false, // 로그인 시도 중 여부
   isLogOutLoading: false, // 로그아웃 시도 중 여부
   isLoadUserLoading: false, // 사용자 정보 로드 시도 중 여부
+  isAddFollowingLoading: false, // 팔로잉 추가 시도 중 여부
+  isRemoveFollowingLoading: false, // 팔로잉 삭제 시도 중 여부
+  isGetListLoading: false, //  목록 가져오기 시도 중 여부
+  isGetFollowerListLoading: false, // 팔로워 목록 가져오기 시도 중 여부
   confirmedId: null, // 현재 중복 확인된 아이디
   confirmedEmail: null, // 현재 검증된 이메일
   emailToken: null, // 이메일 검증 토큰
+  loadedUser: null, // 가져온 목록 정보
+  loadedFollower: null, // 가져온 팔로워 목록 정보
   dbCheckErrorReason: "", // 중복 확인 오류 사유
   checkEmailErrorReason: "", // 이메일 체크 오류 사유
   signUpErrorReason: "", // 회원가입 요청 오류 사유
   logInErrorReason: "", // 로그인 요청 오류 사유
   logOutErrorReason: "", // 로그아웃 요청 오류 사유
   loadUserErrorReason: "", // 사용자 정보 로드 요청 오류 사유
+  addFollowingErrorReason: "", // 팔로잉 추가 요청 오류 사유
+  removeFollowingErrorReason: "", // 팔로잉 삭제 요청 오류 사유
+  getListErrorReason: "", // 목록 가져오기 요청 오류 사유
+  getFollowerListErrorReason: "", // 팔로워 목록 가져오기 요청 오류 사유
   userInfo: null // 로그인한 유저 정보
 };
 
@@ -134,6 +164,87 @@ export default (state = initialState, action) =>
       case LOAD_USER_FAILURE: {
         draft.isLoadUserLoading = false;
         draft.loadUserErrorReason = action.payload;
+        break;
+      }
+      case ADD_FOLLOWING_REQUEST: {
+        draft.isAddFollowingLoading = true;
+        break;
+      }
+      case ADD_FOLLOWING_SUCCESS: {
+        draft.isAddFollowingLoading = false;
+
+        const newState = {
+          ...state.userInfo,
+          Followings: [...state.userInfo.Followings, action.payload]
+        };
+        draft.userInfo = newState;
+        break;
+      }
+      case ADD_FOLLOWING_FAILURE: {
+        draft.isAddFollowingLoading = false;
+        draft.addFollowingErrorReason = action.payload;
+        break;
+      }
+      case REMOVE_FOLLOWING_REQUEST: {
+        draft.isRemoveFollowingLoading = true;
+        break;
+      }
+      case REMOVE_FOLLOWING_SUCCESS: {
+        draft.isRemoveFollowingLoading = false;
+        const newState = {
+          ...state.userInfo,
+          Followings: state.userInfo.Followings.filter(
+            v => v.id != action.payload
+          )
+        };
+        draft.userInfo = newState;
+        break;
+      }
+      case REMOVE_FOLLOWING_FAILURE: {
+        draft.isRemoveFollowingLoading = false;
+        draft.removeFollowingErrorReason = action.payload;
+        break;
+      }
+      case GET_USERLIST_REQUEST: {
+        draft.isGetListLoading = true;
+        break;
+      }
+      case GET_USERLIST_SUCCESS: {
+        draft.isGetListLoading = false;
+        if (draft.loadedUser) {
+          draft.loadedUser = draft.loadedUser.concat(action.payload);
+        } else {
+          draft.loadedUser = action.payload;
+        }
+        break;
+      }
+      case GET_USERLIST_FAILURE: {
+        draft.isGetListLoading = false;
+        break;
+      }
+      case INIT_USERLIST: {
+        draft.loadedUser = null;
+        break;
+      }
+      case GET_FOLLOWERLIST_REQUEST: {
+        draft.isGetFollowerListLoading = true;
+        break;
+      }
+      case GET_FOLLOWERLIST_SUCCESS: {
+        draft.isGetFollowerListLoading = false;
+        if (draft.loadedFollower) {
+          draft.loadedFollower = draft.loadedFollower.concat(action.payload);
+        } else {
+          draft.loadedFollower = action.payload;
+        }
+        break;
+      }
+      case GET_FOLLOWERLIST_FAILURE: {
+        draft.isGetFollowerListLoading = false;
+        break;
+      }
+      case INIT_FOLLOWERLIST: {
+        draft.loadedFollower = null;
         break;
       }
       default:

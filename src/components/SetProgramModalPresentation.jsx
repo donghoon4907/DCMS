@@ -38,7 +38,7 @@ const SetProgramModalPresentaion = ({
   onChangeAgeGrade,
   onChangeChannel,
   onSubmit,
-  isGetDetailGernreListLoading
+  isGetDetailGenreListLoading
 }) => (
   <Modal show={true} onHide={onHide} animation={true} size="lg">
     <Modal.Header closeButton>
@@ -86,10 +86,10 @@ const SetProgramModalPresentaion = ({
             ref={channelEl}
           >
             {loadedChannel &&
-              loadedChannel.map(({ id, name }, idx) => {
+              loadedChannel.map(({ id, channelName }, idx) => {
                 return (
                   <option value={id} key={idx}>
-                    {name}
+                    {channelName}
                   </option>
                 );
               })}
@@ -154,10 +154,10 @@ const SetProgramModalPresentaion = ({
             ref={genreEl}
           >
             {loadedGenre &&
-              loadedGenre.map(({ id, name }, idx) => {
+              loadedGenre.map(({ id, genreName }, idx) => {
                 return (
                   <option value={id} key={idx}>
-                    {name}
+                    {genreName}
                   </option>
                 );
               })}
@@ -170,12 +170,12 @@ const SetProgramModalPresentaion = ({
             value={detailGenre}
             onChange={onChangeDetailGenre}
             ref={detailGenreEl}
-            disabled={isGetDetailGernreListLoading}
+            disabled={isGetDetailGenreListLoading}
           >
             {loadedDetailGenre &&
-              loadedDetailGenre.DetailGenres.map(({ id, name }, idx) => (
+              loadedDetailGenre.DetailGenres.map(({ id, genreName }, idx) => (
                 <option value={id} key={idx}>
-                  {name}
+                  {genreName}
                 </option>
               ))}
           </Form.Control>
@@ -189,9 +189,9 @@ const SetProgramModalPresentaion = ({
             ref={ageGradeEl}
           >
             {loadedAgeGrade &&
-              loadedAgeGrade.map(({ id, name }, idx) => (
+              loadedAgeGrade.map(({ id, gradeName }, idx) => (
                 <option value={id} key={idx}>
-                  {name}
+                  {gradeName}
                 </option>
               ))}
           </Form.Control>
@@ -252,32 +252,6 @@ SetProgramModalPresentaion.propTypes = {
     PropTypes.func,
     PropTypes.shape({ current: PropTypes.object })
   ]),
-  loadedGenre: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired
-    })
-  ),
-  loadedDetailGenre: PropTypes.shape({
-    DetailGenres: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired
-      })
-    )
-  }),
-  loadedAgeGrade: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired
-    })
-  ),
-  loadedChannel: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired
-    })
-  ),
   onHide: PropTypes.func.isRequired,
   onClickThumbnail: PropTypes.func.isRequired,
   onChangeTitle: PropTypes.func.isRequired,
@@ -288,5 +262,5 @@ SetProgramModalPresentaion.propTypes = {
   onChangeDetailGenre: PropTypes.func.isRequired,
   onChangeAgeGrade: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  isGetDetailGernreListLoading: PropTypes.bool.isRequired
+  isGetDetailGenreListLoading: PropTypes.bool.isRequired
 };

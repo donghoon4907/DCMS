@@ -101,21 +101,6 @@ const SignUpPresentation = ({
       <div className="input-group mb-3">
         <div className="input-group-prepend">
           <span className="input-group-text">
-            <Account style={{ width: 24, height: 24 }} />
-          </span>
-        </div>
-        <input
-          type="text"
-          className="form-control"
-          placeholder="이름을 입력하세요."
-          value={name}
-          onChange={onChangeName}
-          ref={nameEl}
-        />
-      </div>
-      <div className="input-group mb-3">
-        <div className="input-group-prepend">
-          <span className="input-group-text">
             <Password style={{ width: 24, height: 24 }} />
           </span>
         </div>
@@ -224,11 +209,6 @@ SignUpPresentation.propTypes = {
   ]),
   confirmPwd: PropTypes.string.isRequired,
   confirmPwdEl: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.shape({ current: PropTypes.object })
-  ]),
-  name: PropTypes.string.isRequired,
-  nameEl: PropTypes.oneOfType([
     PropTypes.func,
     PropTypes.shape({ current: PropTypes.object })
   ]),

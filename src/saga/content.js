@@ -11,9 +11,6 @@ import {
   UPDATE_CONTENTITEM_REQUEST,
   UPDATE_CONTENTITEM_SUCCESS,
   UPDATE_CONTENTITEM_FAILURE,
-  SEARCH_CASTLIST_REQUEST,
-  SEARCH_CASTLIST_SUCCESS,
-  SEARCH_CASTLIST_FAILURE,
   SELECT_CONTENTLIST_REQUEST,
   SELECT_CONTENTLIST_SUCCESS,
   SELECT_CONTENTLIST_FAILURE
@@ -22,6 +19,8 @@ import {
   HIDE_ADDCONTENTMODAL,
   HIDE_UPDATECONTENTMODAL
 } from "../reducers/common";
+import { INIT_SELECTEDPROGRAM } from "../reducers/program";
+import { INIT_SELECTEDCAST } from "../reducers/cast";
 import { axiosErrorHandle } from "../module/error";
 import { showToast } from "../module/toast";
 import { makeListQuery } from "../module/query";
@@ -29,8 +28,8 @@ import { makeListQuery } from "../module/query";
 function getListAPI(payload) {
   return axios
     .get(makeListQuery({ type: "content", ...payload }))
-    .then((response) => ({ response }))
-    .catch((error) => ({ error }));
+    .then(response => ({ response }))
+    .catch(error => ({ error }));
 }
 function addItemAPI(payload) {
   return axios
@@ -41,30 +40,20 @@ function addItemAPI(payload) {
         withCredentials: true
       }
     )
-    .then((response) => ({ response }))
-    .catch((error) => ({ error }));
+    .then(response => ({ response }))
+    .catch(error => ({ error }));
 }
 function updateItemAPI(payload) {
-  const { id, description } = payload;
-
-  const formData = new FormData();
-  formData.append("id", id);
-  if (description) {
-    formData.append("description", description);
-  }
-
   return axios
-    .put("/content/update", formData, {
-      withCredentials: true
-    })
-    .then((response) => ({ response }))
-    .catch((error) => ({ error }));
-}
-function getCastListAPI(payload) {
-  return axios
-    .get(makeListQuery({ type: "cast", ...payload }))
-    .then((response) => ({ response }))
-    .catch((error) => ({ error }));
+    .put(
+      "/content/update",
+      { ...payload },
+      {
+        withCredentials: true
+      }
+    )
+    .then(response => ({ response }))
+    .catch(error => ({ error }));
 }
 function* getList(action) {
   const { response, error } = yield call(getListAPI, action.payload);
@@ -117,10 +106,13 @@ function* addItem(action) {
     yield put({
       type: HIDE_ADDCONTENTMODAL
     });
-    dispatch({
+    yield put({
+      type: INIT_SELECTEDPROGRAM
+    });
+    yield put({
       type: INACTIVE_CONTENTITEM
     });
-    dispatch({
+    yield put({
       type: INIT_SELECTEDCAST
     });
   } else if (error) {
@@ -151,10 +143,16 @@ function* updateItem(action) {
       message: response.data.message
     });
     yield put({
+      type: INIT_SELECTEDPROGRAM
+    });
+    yield put({
       type: INACTIVE_CONTENTITEM
     });
     yield put({
       type: HIDE_UPDATECONTENTMODAL
+    });
+    yield put({
+      type: INIT_SELECTEDCAST
     });
   } else if (error) {
     const { message, type, isExpired } = axiosErrorHandle(error);
@@ -172,25 +170,6 @@ function* updateItem(action) {
     }
   }
 }
-function* searchCastList(action) {
-  const { response, error } = yield call(getCastListAPI, action.payload);
-  if (response) {
-    yield put({
-      type: SEARCH_CASTLIST_SUCCESS,
-      payload: response.data
-    });
-  } else if (error) {
-    const { message, type } = axiosErrorHandle(error);
-    yield put({
-      type: SEARCH_CASTLIST_FAILURE,
-      payload: message
-    });
-    showToast({
-      type,
-      message
-    });
-  }
-}
 // 목록 로드
 function* watchGetList() {
   yield takeEvery(GET_CONTENTLIST_REQUEST, getList);
@@ -203,20 +182,16 @@ function* watchAddItem() {
 function* watchUpdateItem() {
   yield takeEvery(UPDATE_CONTENTITEM_REQUEST, updateItem);
 }
-// 출연진 검색 결과 로드
-function* watchCastSearchList() {
-  yield takeEvery(SEARCH_CASTLIST_REQUEST, searchCastList);
-}
+
 // 프로그램의 컨텐츠 목록 로드
 function* watchSelectContentList() {
   yield takeEvery(SELECT_CONTENTLIST_REQUEST, selectList);
 }
-export default function* () {
+export default function*() {
   yield all([
     fork(watchGetList),
     fork(watchAddItem),
     fork(watchUpdateItem),
-    fork(watchCastSearchList),
     fork(watchSelectContentList)
   ]);
 }

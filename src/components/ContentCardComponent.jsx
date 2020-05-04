@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useCallback } from "react";
+import { useDispatch } from "react-redux";
 import {
   CardWrap,
   CardHeader,
@@ -8,27 +9,47 @@ import {
   EllipsisText
 } from "./PublishStyledComponent";
 import { Add } from "../assets/icons";
+import { SHOW_UPDATECONTENTMODAL } from "../reducers/common";
+import { ACTIVE_CONTENTITEM } from "../reducers/content";
 
-const ContentCardComponent = (props) => {
+const ContentCardComponent = props => {
   const {
     id,
     description,
     createdAt,
     epiNumber,
     Program: { title, Channel, Images },
-    onClickItem,
     Posts
   } = props;
+
+  const dispatch = useDispatch();
+
+  // 컨텐츠 선택
+  const onClickItem = useCallback(
+    content => {
+      dispatch({
+        type: ACTIVE_CONTENTITEM,
+        payload: content
+      });
+      dispatch({
+        type: SHOW_UPDATECONTENTMODAL
+      });
+    },
+    [dispatch]
+  );
+
   return (
     <CardWrap key={id}>
       <CardHeader>
         <div>
-          <img
-            width={50}
-            height={20}
-            src={`${process.env.REACT_APP_BACKEND_HOST}/images/${Channel.Images[0].src}`}
-            alt={"logo"}
-          />
+          {Channel.Images.length > 0 && (
+            <img
+              width={30}
+              height={20}
+              src={`${process.env.REACT_APP_BACKEND_HOST}/logos/${Channel.Images[0].src}`}
+              alt={"logo"}
+            />
+          )}
         </div>
         <div title={createdAt}>{createdAt.substring(0, 10)}</div>
       </CardHeader>
@@ -52,7 +73,7 @@ const ContentCardComponent = (props) => {
         <div></div>
         <div className="d-flex justify-content-center align-items-center">
           <span>포스트 : {Posts.length}개 목록</span>
-          <Add
+          {/* <Add
             style={{
               width: 15,
               height: 15,
@@ -60,7 +81,7 @@ const ContentCardComponent = (props) => {
               marginLeft: 5,
               fill: "white"
             }}
-          />
+          /> */}
         </div>
       </CardFooter>
     </CardWrap>

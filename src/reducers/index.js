@@ -4,12 +4,19 @@ import user from "./user";
 import program from "./program";
 import content from "./content";
 import post from "./post";
+import cast from "./cast";
+import genre from "./genre";
+import channel from "./channel";
+import youtube from "./youtube";
 
-export default combineReducers({ common, user, post, program, content });
-
-/**
- * Immer pattern
- *
- * 1. concat => single data: push / multiple datas: forEach and push
- * 2. filter => filter or splice
- */
+export default combineReducers({
+  common,
+  user,
+  post,
+  program,
+  content,
+  cast,
+  genre,
+  channel,
+  youtube
+});

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useCallback } from "react";
+import { useDispatch } from "react-redux";
 import {
   CardWrap,
   CardHeader,
@@ -7,6 +8,8 @@ import {
   CardFooter,
   EllipsisText
 } from "./PublishStyledComponent";
+import { SHOW_UPDATEPROGRAMMODAL } from "../reducers/common";
+import { ACTIVE_PROGRAMITEM } from "../reducers/program";
 
 const ProgramCardComponent = props => {
   const {
@@ -17,19 +20,37 @@ const ProgramCardComponent = props => {
     Channel,
     Contents,
     Genre,
-    DetailGenre,
-    onClickItem
+    DetailGenre
   } = props;
+
+  const dispatch = useDispatch();
+
+  // 프로그램 선택
+  const onClickItem = useCallback(
+    program => {
+      dispatch({
+        type: ACTIVE_PROGRAMITEM,
+        payload: program
+      });
+      dispatch({
+        type: SHOW_UPDATEPROGRAMMODAL
+      });
+    },
+    [dispatch]
+  );
+
   return (
     <CardWrap>
       <CardHeader>
         <div>
-          <img
-            width={50}
-            height={20}
-            src={`${process.env.REACT_APP_BACKEND_HOST}/images/${Channel.Images[0].src}`}
-            alt={"logo"}
-          />
+          {Channel.Images.length > 0 && (
+            <img
+              width={30}
+              height={20}
+              src={`${process.env.REACT_APP_BACKEND_HOST}/logos/${Channel.Images[0].src}`}
+              alt={"logo"}
+            />
+          )}
         </div>
         <div title={createdAt}>{createdAt.substring(0, 10)}</div>
       </CardHeader>
@@ -49,7 +70,7 @@ const ProgramCardComponent = props => {
       </CardBody>
       <CardFooter>
         <div>
-          {Genre.name}, {DetailGenre.name}
+          {Genre.genreName}, {DetailGenre.genreName}
         </div>
         <div>{Contents.length === 0 ? "방송예정" : `${Contents.length}화`}</div>
       </CardFooter>

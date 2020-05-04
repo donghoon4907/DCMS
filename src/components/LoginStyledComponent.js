@@ -16,13 +16,17 @@ export const Container = styled.div`
 
 export const Wrap = styled.div`
   width: 500px;
-  height: auto;
+  max-height: ${window.innerHeight - 100}px;
+  overflow-y: auto;
   border: 1px solid lightgray;
   border-radius: 5%;
   padding: 20px;
   box-sizing: border-box;
   background: #f8f9fa;
   box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.2);
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const Title = styled.div`

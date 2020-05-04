@@ -3,16 +3,19 @@ import { Button, Modal, Form, InputGroup, FormControl } from "react-bootstrap";
 import PropTypes from "prop-types";
 import HashTagComponent from "./HashTagComponent";
 import { Image, Search } from "../assets/icons";
-import { Thumbnail } from "./LoginStyledComponent";
+import { Thumbnail, LoadingWrap } from "./LoginStyledComponent";
 
 const SetPostModalPresentaion = ({
+  type,
+  isAddItemLoading,
+  isUpdateItemLoading,
   selectedProgram,
   selectedContent,
   title,
   titleEl,
   description,
   descriptionEl,
-  epiNumber,
+  contentId,
   tags,
   setTags,
   thumbnail,
@@ -23,13 +26,13 @@ const SetPostModalPresentaion = ({
   onClickEditVideo,
   onChangeTitle,
   onChangeDescription,
-  onChangeEpiNumber,
+  onChangeContentId,
   onChangeThumbnail,
   onSubmit
 }) => (
   <Modal show={true} onHide={onHide} animation={true} size="lg">
     <Modal.Header closeButton>
-      <Modal.Title>포스트 등록</Modal.Title>
+      <Modal.Title>포스트 {type}</Modal.Title>
     </Modal.Header>
     <Modal.Body
       style={{ maxHeight: window.innerHeight - 200, overflowY: "auto" }}
@@ -72,17 +75,19 @@ const SetPostModalPresentaion = ({
               value={selectedProgram ? selectedProgram.title : ""}
               readOnly
             />
-            <InputGroup.Prepend>
-              <InputGroup.Text
-                onClick={onClickShowPgmModal}
-                style={{
-                  borderTopRightRadius: 5,
-                  borderBottomRightRadius: 5
-                }}
-              >
-                <Search style={{ width: 15, height: 15 }} />
-              </InputGroup.Text>
-            </InputGroup.Prepend>
+            {type === "등록" && (
+              <InputGroup.Prepend>
+                <InputGroup.Text
+                  onClick={onClickShowPgmModal}
+                  style={{
+                    borderTopRightRadius: 5,
+                    borderBottomRightRadius: 5
+                  }}
+                >
+                  <Search style={{ width: 15, height: 15 }} />
+                </InputGroup.Text>
+              </InputGroup.Prepend>
+            )}
           </InputGroup>
         </Form.Group>
         <Form.Group>
@@ -90,33 +95,36 @@ const SetPostModalPresentaion = ({
           <InputGroup>
             <Form.Control
               as="select"
-              value={epiNumber}
-              onChange={onChangeEpiNumber}
-              disabled={epiNumber === -1}
+              value={contentId}
+              onChange={onChangeContentId}
+              disabled={contentId === -1 || type === "수정"}
             >
               {selectedContent &&
-                selectedContent.map((v, idx) => {
+                selectedContent.map(v => {
                   return (
-                    <option value={v.id} key={`selectContent${idx}`}>
-                      {idx + 1}
+                    <option value={v.id} key={`selectContent${v.id}`}>
+                      {v.epiNumber}
                     </option>
                   );
                 })}
             </Form.Control>
           </InputGroup>
         </Form.Group>
-        <Form.Group>
-          <Form.Label>영상 편집</Form.Label>
-          <InputGroup>
-            <Button
-              variant="outline-secondary"
-              onClick={onClickEditVideo}
-              disabled={epiNumber === -1}
-            >
-              영상 편집하기
-            </Button>
-          </InputGroup>
-        </Form.Group>
+        {type === "등록" && (
+          <Form.Group>
+            <Form.Label>영상 편집</Form.Label>
+            <InputGroup>
+              <Button
+                variant="outline-secondary"
+                onClick={onClickEditVideo}
+                disabled={contentId === -1}
+              >
+                영상 편집하기
+              </Button>
+            </InputGroup>
+          </Form.Group>
+        )}
+
         <Form.Group>
           <Form.Label>제목</Form.Label>
           <Form.Control
@@ -159,15 +167,24 @@ const SetPostModalPresentaion = ({
       <Button variant="outline-secondary" onClick={onHide}>
         취소
       </Button>
-      <Button variant="outline-primary" onClick={onSubmit}>
-        등록
-      </Button>
+      <LoadingWrap loading={isAddItemLoading || isUpdateItemLoading ? 1 : 0}>
+        <Button
+          variant="outline-primary"
+          onClick={onSubmit}
+          style={{ position: "relative", zIndex: 1 }}
+        >
+          {type}
+        </Button>
+      </LoadingWrap>
     </Modal.Footer>
   </Modal>
 );
 export default SetPostModalPresentaion;
 
 SetPostModalPresentaion.propTypes = {
+  type: PropTypes.string.isRequired,
+  isAddItemLoading: PropTypes.bool.isRequired,
+  isUpdateItemLoading: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
   titleEl: PropTypes.oneOfType([
     PropTypes.func,

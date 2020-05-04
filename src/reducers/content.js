@@ -19,18 +19,6 @@ export const ACTIVE_CONTENTITEM = "ACTIVE_CONTENTITEM";
 export const INACTIVE_CONTENTITEM = "INACTIVE_CONTENTITEM";
 // 등록 초기화
 export const INIT_ADDCONTENT = "INIT_ADDCONTENT";
-// 출연진 검색
-export const SEARCH_CASTLIST_REQUEST = "SEARCH_CASTLIST_REQUEST";
-export const SEARCH_CASTLIST_SUCCESS = "SEARCH_CASTLIST_SUCCESS";
-export const SEARCH_CASTLIST_FAILURE = "SEARCH_CASTLIST_FAILURE";
-// 검색 후 프로그램 선택
-export const SELECT_CAST = "SELECT_CAST";
-// 출연진 검색 결과 초기화 (검색 팝업창 벗어날 시)
-export const INIT_SEARCHEDCAST = "INIT_SEARCHEDCAST";
-// 선택된 출연진 초기화 (컨텐츠 등록 팝업창 벗어날 시)
-export const INIT_SELECTEDCAST = "INIT_SELECTEDCAST";
-// 선택된 출연진 삭제
-export const REMOVE_SELECTEDCAST = "REMOVE_SELECTEDCAST";
 // 선택한 프로그램의 콘텐츠 정보 로드
 export const SELECT_CONTENTLIST_REQUEST = "SELECT_CONTENTLIST_REQUEST";
 export const SELECT_CONTENTLIST_SUCCESS = "SELECT_CONTENTLIST_SUCCESS";
@@ -58,10 +46,11 @@ export const initialState = {
 };
 
 export default (state = initialState, action) =>
-  produce(state, (draft) => {
+  produce(state, draft => {
     switch (action.type) {
       case GET_CONTENTLIST_REQUEST: {
         draft.isGetListLoading = true;
+        if (action.payload.lastId === 0) draft.loadedContent = [];
         break;
       }
       case GET_CONTENTLIST_SUCCESS: {
@@ -98,7 +87,7 @@ export default (state = initialState, action) =>
       }
       case UPDATE_CONTENTITEM_SUCCESS: {
         draft.isUpdateItemLoading = false;
-        draft.loadedContent = draft.loadedContent.map((program) => {
+        draft.loadedContent = draft.loadedContent.map(program => {
           if (program.id === action.payload.id) {
             return action.payload;
           }
@@ -127,47 +116,6 @@ export default (state = initialState, action) =>
       }
       case INACTIVE_CONTENTITEM: {
         draft.activeContent = null;
-        break;
-      }
-      case SEARCH_CASTLIST_REQUEST: {
-        draft.isSearchCastListLoading = true;
-        break;
-      }
-      case SEARCH_CASTLIST_SUCCESS: {
-        draft.isSearchCastListLoading = false;
-        draft.searchedCast = action.payload;
-        break;
-      }
-      case SEARCH_CASTLIST_FAILURE: {
-        draft.isSearchCastListLoading = false;
-        draft.searchCastListErrorReason = action.payload;
-        break;
-      }
-      case SELECT_CAST: {
-        if (!draft.selectedCast) {
-          if (Array.isArray(action.payload)) {
-            draft.selectedCast = action.payload;
-          } else {
-            draft.selectedCast = [action.payload];
-          }
-        } else {
-          draft.selectedCast = draft.selectedCast.concat(action.payload);
-        }
-
-        break;
-      }
-      case INIT_SEARCHEDCAST: {
-        draft.searchedCast = null;
-        break;
-      }
-      case INIT_SELECTEDCAST: {
-        draft.selectedCast = null;
-        break;
-      }
-      case REMOVE_SELECTEDCAST: {
-        draft.selectedCast = draft.selectedCast.filter(
-          (cast) => cast.id !== action.payload
-        );
         break;
       }
       case SELECT_CONTENTLIST_REQUEST: {

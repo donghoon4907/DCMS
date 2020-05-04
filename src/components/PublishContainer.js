@@ -5,59 +5,63 @@ import PublishPresentaion from "./PublishPresentaion";
 import {
   SHOW_ADDPROGRAMMODAL,
   SHOW_ADDCONTENTMODAL,
-  SHOW_ADDPOSTMODAL,
-  SHOW_UPDATEPROGRAMMODAL,
-  SHOW_UPDATECONTENTMODAL,
-  SHOW_UPDATEPOSTMODAL
+  SHOW_ADDPOSTMODAL
 } from "../reducers/common";
 import {
   GET_PROGRAMLIST_REQUEST,
   INIT_PROGRAMLIST,
   INIT_ADDPROGRAM,
-  ACTIVE_PROGRAMITEM
+  GET_AGEGRADELIST_REQUEST
 } from "../reducers/program";
+import { GET_GENRELIST_REQUEST } from "../reducers/genre";
+import { GET_CHANNELLIST_REQUEST } from "../reducers/channel";
 import {
   GET_CONTENTLIST_REQUEST,
   INIT_CONTENTLIST,
-  INIT_ADDCONTENT,
-  ACTIVE_CONTENTITEM
+  INIT_ADDCONTENT
 } from "../reducers/content";
 import {
   GET_POSTLIST_REQUEST,
   INIT_POSTLIST,
-  INIT_ADDPOST,
-  ACTIVE_POSTITEM
+  INIT_ADDPOST
 } from "../reducers/post";
+import { makeSortList } from "../module/query";
 
 const PublishContainer = () => {
   const dispatch = useDispatch();
 
   const {
     loadedProgram,
-    loadedChannel,
     isGetListLoading: isLoadingPgm,
     isSuccessAddItem: isSuccessAddPgm
-  } = useSelector((state) => state.program);
+  } = useSelector(state => state.program);
   const {
     loadedContent,
     isGetListLoading: isLoadingContent,
     isSuccessAddItem: isSuccessAddContent
-  } = useSelector((state) => state.content);
+  } = useSelector(state => state.content);
   const {
     loadedPost,
     isGetListLoading: isLoadingPost,
     isSuccessAddItem: isSuccessAddPost
-  } = useSelector((state) => state.program);
+  } = useSelector(state => state.post);
+  const { loadedChannel } = useSelector(state => state.channel);
 
   const [activeMenu, setActiveMenu] = useState(1); // 현재 선택된 메뉴
   const [pgmStartDate, setPgmStartDate] = useState(
-    moment().subtract(7, "d").toDate()
+    moment()
+      .subtract(7, "d")
+      .toDate()
   ); // 프로그램 시작일
   const [contentStartDate, setContentStartDate] = useState(
-    moment().subtract(7, "d").toDate()
+    moment()
+      .subtract(7, "d")
+      .toDate()
   ); // 컨텐츠 시작일
   const [postStartDate, setPostStartDate] = useState(
-    moment().subtract(7, "d").toDate()
+    moment()
+      .subtract(7, "d")
+      .toDate()
   ); // 포스트 시작일
   const [pgmEndDate, setPgmEndDate] = useState(new Date()); // 프로그램 마감일
   const [contentEndDate, setContentEndDate] = useState(new Date()); // 컨텐츠 마감일
@@ -69,21 +73,27 @@ const PublishContainer = () => {
   const [contentSort, setContentSort] = useState("createdAt,DESC"); // 콘텐츠 정렬
   const [postSort, setPostSort] = useState("createdAt,DESC"); // 포스트 정렬
   const [pgmChannel, setPgmChannel] = useState(""); // 프로그램 채널
+  const [sortList, setSortList] = useState(
+    makeSortList([
+      { text: "등록일", isAsc: true },
+      { text: "수정일", isAsc: true }
+    ])
+  ); // 정렬 설정
 
-  const onChangePgmSearchKeyword = useCallback((e) => {
+  const onChangePgmSearchKeyword = useCallback(e => {
     setPgmSearchKeyword(e.target.value);
   }, []);
 
-  const onChangeContentSearchKeyword = useCallback((e) => {
+  const onChangeContentSearchKeyword = useCallback(e => {
     setContentSearchKeyword(e.target.value);
   }, []);
 
-  const onChangePostSearchKeyword = useCallback((e) => {
+  const onChangePostSearchKeyword = useCallback(e => {
     setPostSearchKeyword(e.target.value);
   }, []);
 
   const onChangePgmSort = useCallback(
-    (e) => {
+    e => {
       if (isLoadingPgm) return;
       setPgmSort(e.target.value);
       dispatch({
@@ -113,7 +123,7 @@ const PublishContainer = () => {
   );
 
   const onChangeContentSort = useCallback(
-    (e) => {
+    e => {
       if (isLoadingContent) return;
       setContentSort(e.target.value);
       dispatch({
@@ -141,7 +151,7 @@ const PublishContainer = () => {
   );
 
   const onChangePostSort = useCallback(
-    (e) => {
+    e => {
       if (isLoadingPost) return;
       setPostSort(e.target.value);
       dispatch({
@@ -163,7 +173,7 @@ const PublishContainer = () => {
   );
 
   const onChangePgmChannel = useCallback(
-    (e) => {
+    e => {
       if (isLoadingPgm) return;
       setPgmChannel(e.target.value);
       dispatch({
@@ -193,7 +203,7 @@ const PublishContainer = () => {
   );
 
   // 부메뉴 클릭 (현재: 프로그램, 포스트)
-  const onClickSubMenuItem = useCallback((menuNum) => {
+  const onClickSubMenuItem = useCallback(menuNum => {
     setActiveMenu(menuNum);
   }, []);
 
@@ -220,7 +230,7 @@ const PublishContainer = () => {
 
   // 프로그램 엔터 검색
   const onKeyDownPgmSearchKeyword = useCallback(
-    (e) => {
+    e => {
       if (isLoadingPgm) return;
       if (e.key === "Enter") {
         dispatch({
@@ -237,6 +247,7 @@ const PublishContainer = () => {
           }
         });
         setPgmSort("createdAt,DESC");
+        setPgmChannel("");
       }
     },
     [isLoadingPgm, pgmStartDate, pgmEndDate, dispatch]
@@ -258,11 +269,12 @@ const PublishContainer = () => {
       }
     });
     setPgmSort("createdAt,DESC");
+    setPgmChannel("");
   }, [isLoadingPgm, pgmSearchKeyword, pgmStartDate, pgmEndDate, dispatch]);
 
   // 컨텐츠 엔터 검색
   const onKeyDownContentSearchKeyword = useCallback(
-    (e) => {
+    e => {
       if (isLoadingContent) return;
       if (e.key === "Enter") {
         dispatch({
@@ -310,7 +322,7 @@ const PublishContainer = () => {
 
   // 포스트 엔터 검색
   const onKeyDownPostSearchKeyword = useCallback(
-    (e) => {
+    e => {
       if (isLoadingPost) return;
       if (e.key === "Enter") {
         dispatch({
@@ -350,51 +362,9 @@ const PublishContainer = () => {
     setPostSort("createdAt,DESC");
   }, [isLoadingPost, postSearchKeyword, postStartDate, postEndDate, dispatch]);
 
-  // 프로그램 선택
-  const onClickPgmItem = useCallback(
-    (program) => {
-      dispatch({
-        type: ACTIVE_PROGRAMITEM,
-        payload: program
-      });
-      dispatch({
-        type: SHOW_UPDATEPROGRAMMODAL
-      });
-    },
-    [dispatch]
-  );
-
-  // 컨텐츠 선택
-  const onClickContentItem = useCallback(
-    (content) => {
-      dispatch({
-        type: ACTIVE_CONTENTITEM,
-        payload: content
-      });
-      dispatch({
-        type: SHOW_UPDATECONTENTMODAL
-      });
-    },
-    [dispatch]
-  );
-
-  // 포스트 선택
-  const onClickPostItem = useCallback(
-    (post) => {
-      dispatch({
-        type: ACTIVE_POSTITEM,
-        payload: post
-      });
-      dispatch({
-        type: SHOW_UPDATEPOSTMODAL
-      });
-    },
-    [dispatch]
-  );
-
   // 프로그램 스크롤 더보기
   const onScrollInPgmList = useCallback(
-    (e) => {
+    e => {
       const { scrollHeight, clientHeight, scrollTop } = e.target;
       if (loadedProgram) {
         if (scrollHeight - scrollTop === clientHeight) {
@@ -408,7 +378,8 @@ const PublishContainer = () => {
                 searchKeyword: pgmSearchKeyword,
                 startDate: moment(pgmStartDate).format("YYYY-MM-DD"),
                 endDate: moment(pgmEndDate).format("YYYY-MM-DD"),
-                sort: pgmSort
+                sort: pgmSort,
+                channel: pgmChannel
               }
             });
           }
@@ -421,13 +392,14 @@ const PublishContainer = () => {
       pgmStartDate,
       pgmEndDate,
       pgmSort,
+      pgmChannel,
       dispatch
     ]
   );
 
   // 컨텐츠 스크롤 더보기
   const onScrollInContentList = useCallback(
-    (e) => {
+    e => {
       const { scrollHeight, clientHeight, scrollTop } = e.target;
       if (loadedContent) {
         if (scrollHeight - scrollTop === clientHeight) {
@@ -460,7 +432,7 @@ const PublishContainer = () => {
 
   // 포스트 스크롤 더보기
   const onScrollInPostList = useCallback(
-    (e) => {
+    e => {
       const { scrollHeight, clientHeight, scrollTop } = e.target;
       if (loadedPost) {
         if (scrollHeight - scrollTop === clientHeight) {
@@ -493,7 +465,11 @@ const PublishContainer = () => {
   // 프로그램 등록 후 목록 업데이트
   useEffect(() => {
     if (isSuccessAddPgm) {
-      setPgmStartDate(moment().subtract(7, "d").toDate());
+      setPgmStartDate(
+        moment()
+          .subtract(7, "d")
+          .toDate()
+      );
       setPgmEndDate(new Date());
       setPgmSearchKeyword("");
       setPgmSort("createdAt,DESC");
@@ -504,7 +480,9 @@ const PublishContainer = () => {
         payload: {
           lastId: 0,
           limit: 20,
-          startDate: moment().subtract(7, "d").format("YYYY-MM-DD"),
+          startDate: moment()
+            .subtract(7, "d")
+            .format("YYYY-MM-DD"),
           endDate: moment().format("YYYY-MM-DD")
         }
       });
@@ -515,7 +493,11 @@ const PublishContainer = () => {
   // 컨텐츠 등록 후 목록 업데이트
   useEffect(() => {
     if (isSuccessAddContent) {
-      setContentStartDate(moment().subtract(7, "d").toDate());
+      setContentStartDate(
+        moment()
+          .subtract(7, "d")
+          .toDate()
+      );
       setContentEndDate(new Date());
       setContentSearchKeyword("");
       setContentSort("createdAt,DESC");
@@ -525,7 +507,9 @@ const PublishContainer = () => {
         payload: {
           lastId: 0,
           limit: 20,
-          startDate: moment().subtract(7, "d").format("YYYY-MM-DD"),
+          startDate: moment()
+            .subtract(7, "d")
+            .format("YYYY-MM-DD"),
           endDate: moment().format("YYYY-MM-DD")
         }
       });
@@ -536,7 +520,11 @@ const PublishContainer = () => {
   // 포스트 등록 후 목록 업데이트
   useEffect(() => {
     if (isSuccessAddPost) {
-      setPostStartDate(moment().subtract(7, "d").toDate());
+      setPostStartDate(
+        moment()
+          .subtract(7, "d")
+          .toDate()
+      );
       setPostEndDate(new Date());
       setPostSearchKeyword("");
       dispatch({ type: INIT_POSTLIST });
@@ -545,7 +533,9 @@ const PublishContainer = () => {
         payload: {
           lastId: 0,
           limit: 20,
-          startDate: moment().subtract(7, "d").format("YYYY-MM-DD"),
+          startDate: moment()
+            .subtract(7, "d")
+            .format("YYYY-MM-DD"),
           endDate: moment().format("YYYY-MM-DD")
         }
       });
@@ -553,8 +543,59 @@ const PublishContainer = () => {
     }
   }, [isSuccessAddPost, dispatch]);
 
+  useEffect(() => {
+    // 프로그램 목록을 가져옵니다.
+    dispatch({
+      type: GET_PROGRAMLIST_REQUEST,
+      payload: {
+        lastId: 0,
+        limit: 20,
+        startDate: moment()
+          .subtract(7, "d")
+          .format("YYYY-MM-DD"),
+        endDate: moment().format("YYYY-MM-DD")
+      }
+    });
+    dispatch({
+      type: GET_CONTENTLIST_REQUEST,
+      payload: {
+        lastId: 0,
+        limit: 20,
+        startDate: moment()
+          .subtract(7, "d")
+          .format("YYYY-MM-DD"),
+        endDate: moment().format("YYYY-MM-DD")
+      }
+    });
+    // 포스트 목록을 가져옵니다.
+    dispatch({
+      type: GET_POSTLIST_REQUEST,
+      payload: {
+        lastId: 0,
+        limit: 20,
+        startDate: moment()
+          .subtract(7, "d")
+          .format("YYYY-MM-DD"),
+        endDate: moment().format("YYYY-MM-DD")
+      }
+    });
+    // 장르 목록을 가져옵니다.
+    dispatch({
+      type: GET_GENRELIST_REQUEST
+    });
+    // 연령등급 목록을 가져옵니다.
+    dispatch({
+      type: GET_AGEGRADELIST_REQUEST
+    });
+    // 채널 목록을 가져옵니다.
+    dispatch({
+      type: GET_CHANNELLIST_REQUEST
+    });
+  }, [dispatch]);
+
   return (
     <PublishPresentaion
+      sortList={sortList}
       isLoadingPgm={isLoadingPgm}
       isLoadingContent={isLoadingContent}
       isLoadingPost={isLoadingPost}
@@ -593,9 +634,6 @@ const PublishContainer = () => {
       onClickAddProgramBtn={onClickAddProgramBtn}
       onClickAddContentBtn={onClickAddContentBtn}
       onClickAddPostBtn={onClickAddPostBtn}
-      onClickPgmItem={onClickPgmItem}
-      onClickContentItem={onClickContentItem}
-      onClickPostItem={onClickPostItem}
       onKeyDownPgmSearchKeyword={onKeyDownPgmSearchKeyword}
       onKeyDownContentSearchKeyword={onKeyDownContentSearchKeyword}
       onKeyDownPostSearchKeyword={onKeyDownPostSearchKeyword}

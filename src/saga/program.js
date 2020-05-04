@@ -11,18 +11,9 @@ import {
   UPDATE_PROGRAMITEM_REQUEST,
   UPDATE_PROGRAMITEM_SUCCESS,
   UPDATE_PROGRAMITEM_FAILURE,
-  GET_GENRELIST_REQUEST,
-  GET_GENRELIST_SUCCESS,
-  GET_GENRELIST_FAILURE,
-  GET_DETAILGENRELIST_REQUEST,
-  GET_DETAILGENRELIST_SUCCESS,
-  GET_DETAILGENRELIST_FAILURE,
   GET_AGEGRADELIST_REQUEST,
   GET_AGEGRADELIST_SUCCESS,
   GET_AGEGRADELIST_FAILURE,
-  GET_CHANNELLIST_REQUEST,
-  GET_CHANNELLIST_SUCCESS,
-  GET_CHANNELLIST_FAILURE,
   SEARCH_PROGRAMLIST_REQUEST,
   SEARCH_PROGRAMLIST_SUCCESS,
   SEARCH_PROGRAMLIST_FAILURE
@@ -111,30 +102,13 @@ function updateItemAPI(payload) {
     .then(response => ({ response }))
     .catch(error => ({ error }));
 }
-function getGenreListAPI() {
-  return axios
-    .get("/program/genre")
-    .then(response => ({ response }))
-    .catch(error => ({ error }));
-}
-function getDetailGenreListAPI({ id }) {
-  return axios
-    .get(`/program/detailgenre?id=${id}`)
-    .then(response => ({ response }))
-    .catch(error => ({ error }));
-}
 function getAgeGradeListAPI() {
   return axios
     .get("/program/agegrade")
     .then(response => ({ response }))
     .catch(error => ({ error }));
 }
-function getChannelListAPI() {
-  return axios
-    .get("/program/channel")
-    .then(response => ({ response }))
-    .catch(error => ({ error }));
-}
+
 function* getList(action) {
   const { response, error } = yield call(getListAPI, action.payload);
   if (response) {
@@ -216,44 +190,6 @@ function* updateItem(action) {
     }
   }
 }
-function* getGenreList(action) {
-  const { response, error } = yield call(getGenreListAPI);
-  if (response) {
-    yield put({
-      type: GET_GENRELIST_SUCCESS,
-      payload: response.data
-    });
-  } else if (error) {
-    const { message, type } = axiosErrorHandle(error);
-    yield put({
-      type: GET_GENRELIST_FAILURE,
-      payload: message
-    });
-    showToast({
-      type,
-      message
-    });
-  }
-}
-function* getDetailGenreList(action) {
-  const { response, error } = yield call(getDetailGenreListAPI, action.payload);
-  if (response) {
-    yield put({
-      type: GET_DETAILGENRELIST_SUCCESS,
-      payload: response.data
-    });
-  } else if (error) {
-    const { message, type } = axiosErrorHandle(error);
-    yield put({
-      type: GET_DETAILGENRELIST_FAILURE,
-      payload: message
-    });
-    showToast({
-      type,
-      message
-    });
-  }
-}
 function* getAgeGradeList(action) {
   const { response, error } = yield call(getAgeGradeListAPI);
   if (response) {
@@ -273,25 +209,7 @@ function* getAgeGradeList(action) {
     });
   }
 }
-function* getChannelList(action) {
-  const { response, error } = yield call(getChannelListAPI);
-  if (response) {
-    yield put({
-      type: GET_CHANNELLIST_SUCCESS,
-      payload: response.data
-    });
-  } else if (error) {
-    const { message, type } = axiosErrorHandle(error);
-    yield put({
-      type: GET_CHANNELLIST_FAILURE,
-      payload: message
-    });
-    showToast({
-      type,
-      message
-    });
-  }
-}
+
 function* searchList(action) {
   const { response, error } = yield call(getListAPI, action.payload);
   if (response) {
@@ -323,21 +241,9 @@ function* watchAddItem() {
 function* watchUpdateItem() {
   yield takeEvery(UPDATE_PROGRAMITEM_REQUEST, updateItem);
 }
-// 장르 목록 로드
-function* watchGetGenreList() {
-  yield takeEvery(GET_GENRELIST_REQUEST, getGenreList);
-}
-// 세부장르 목록 로드
-function* watchGetDetailGenreList() {
-  yield takeEvery(GET_DETAILGENRELIST_REQUEST, getDetailGenreList);
-}
 // 연령등급 목록 로드
 function* watchGetAgeGradeList() {
   yield takeEvery(GET_AGEGRADELIST_REQUEST, getAgeGradeList);
-}
-// 채널 목록 로드
-function* watchGetChannelList() {
-  yield takeEvery(GET_CHANNELLIST_REQUEST, getChannelList);
 }
 // 검색 결과 로드
 function* watchSearchList() {
@@ -348,10 +254,7 @@ export default function*() {
     fork(watchGetList),
     fork(watchAddItem),
     fork(watchUpdateItem),
-    fork(watchGetGenreList),
-    fork(watchGetDetailGenreList),
     fork(watchGetAgeGradeList),
-    fork(watchGetChannelList),
     fork(watchSearchList)
   ]);
 }

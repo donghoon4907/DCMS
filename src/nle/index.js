@@ -7,13 +7,13 @@ function VideoEdit() {
   );
   this.videourl = this.getParam("video_url");
   this.thumburl = this.getParam("thumb_url");
-  this.title = this.getParam("title"); // 컨텐츠 제목
-  this.duration = this.getParam("duration"); // 컨텐츠 영상 재생시간
+  this.title = decodeURIComponent(this.getParam("title")); // 컨텐츠 제목
+  this.duration = this.getParam("runtime"); // 컨텐츠 영상 재생시간
   this.init();
 }
 
 VideoEdit.prototype = {
-  init: function () {
+  init: function() {
     var that = this;
 
     this.app = new gvEditor({
@@ -24,39 +24,36 @@ VideoEdit.prototype = {
         usernm: that.usernm
       },
       exportbtn: {
-        evt: that.onExport
+        evt: function() {
+          try {
+            var editedData = that.getEditedDatas();
+            var parsedEditedData = JSON.parse(editedData);
+            opener.document.getElementById("export").value =
+              parsedEditedData[0].startframe +
+              "," +
+              parsedEditedData[0].endframe;
+            self.close();
+          } catch (e) {
+            alert("먼저 영상을 편집해야 합니다.");
+          }
+        }
       }
     });
     this.addItem();
   },
 
-  onExport: function (_) {
-    try {
-      var editedData = this.getEditedDatas();
-      var parsedEditedData = JSON.parse(editedData);
-      if (parsedEditedData) {
-        console.log(parsedEditedData);
-      } else {
-        alert("영상을 편집해야 합니다.");
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  },
-
-  getEditedDatas: function (_) {
+  getEditedDatas: function(_) {
     return this.app.exportDatas();
   },
 
-  addItem: function (_) {
+  addItem: function(_) {
     var that = this;
     this.app.addItem({
       type: "video",
       startframe: 0,
       endframe: that.endframe,
-      url: "http://localhost:3001/videos/" + decodeURIComponent(that.videourl),
-      thumb_url:
-        "http://localhost:3001/images/" + decodeURIComponent(that.thumburl),
+      url: "http://localhost:3001/videos/" + that.videourl,
+      thumb_url: "http://localhost:3001/images/" + that.thumburl,
       title: that.title,
       ref_id: that.id,
       origin: {
@@ -66,11 +63,11 @@ VideoEdit.prototype = {
     });
   },
 
-  clearEditTimeline: function (_) {
+  clearEditTimeline: function(_) {
     this.app.clearEditTmeline();
   },
 
-  getParam: function (sname) {
+  getParam: function(sname) {
     var params = decodeURIComponent(location.search).substr(
       location.search.indexOf("?") + 1
     );

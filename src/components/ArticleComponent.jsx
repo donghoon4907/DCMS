@@ -13,9 +13,12 @@ import EmptyComponent from "./EmptyComponent";
 import LoadingComponent from "./LoadingComponent";
 import ProgramCardComponent from "./ProgramCardComponent";
 import ContentCardComponent from "./ContentCardComponent";
+import PostCardComponent from "./PostCardComponent";
+import UserCardComponent from "./UserCardComponent";
 
 const ArticleComponent = ({
   type,
+  sortList,
   isLoadingData,
   loadedData,
   loadedChannel,
@@ -31,7 +34,6 @@ const ArticleComponent = ({
   onChangeSort,
   onChangeChannel,
   onClickAddBtn,
-  onClickItem,
   onKeyDownSearchKeyword,
   onClickSearchBtn,
   onScrollInList
@@ -39,34 +41,38 @@ const ArticleComponent = ({
   <WorkWrap active={isActive && 1}>
     <SearchBar>
       <Field flex={3}>
-        <div className="mr-3 d-flex align-items-center">등록일</div>
-        <div>
-          <StyledDatePicker
-            className="form-control"
-            selected={startDate}
-            onChange={(date) => setStartDate(date)}
-            selectsStart
-            isClearable
-            startDate={startDate}
-            endDate={endDate}
-            placeholderText="입력하세요."
-            dateFormat="yyyy-MM-dd"
-          />
-        </div>
-        <div className="d-flex align-items-center ml-2 mr-2">~</div>
-        <div>
-          <StyledDatePicker
-            className="form-control"
-            selected={endDate}
-            onChange={(date) => setEndDate(date)}
-            selectsEnd
-            isClearable
-            startDate={startDate}
-            endDate={endDate}
-            placeholderText="입력하세요."
-            dateFormat="yyyy-MM-dd"
-          />
-        </div>
+        {startDate && endDate && (
+          <>
+            <div className="mr-3 d-flex align-items-center">등록일</div>
+            <div>
+              <StyledDatePicker
+                className="form-control"
+                selected={startDate}
+                onChange={date => setStartDate(date)}
+                selectsStart
+                isClearable
+                startDate={startDate}
+                endDate={endDate}
+                placeholderText="입력하세요."
+                dateFormat="yyyy-MM-dd"
+              />
+            </div>
+            <div className="d-flex align-items-center ml-2 mr-2">~</div>
+            <div>
+              <StyledDatePicker
+                className="form-control"
+                selected={endDate}
+                onChange={date => setEndDate(date)}
+                selectsEnd
+                isClearable
+                startDate={startDate}
+                endDate={endDate}
+                placeholderText="입력하세요."
+                dateFormat="yyyy-MM-dd"
+              />
+            </div>
+          </>
+        )}
       </Field>
       <Field flex={1}>
         <InputGroup>
@@ -92,7 +98,9 @@ const ArticleComponent = ({
     </SearchBar>
     <SearchBar>
       <Field flex={3}>
-        <StyledButton onClick={onClickAddBtn}>{type} 등록</StyledButton>
+        {onClickAddBtn && (
+          <StyledButton onClick={onClickAddBtn}>{type} 등록</StyledButton>
+        )}
       </Field>
       <Field flex={1}>
         {typeof channel !== "undefined" && (
@@ -104,10 +112,10 @@ const ArticleComponent = ({
           >
             <option value="">채널 선택</option>
             {loadedChannel &&
-              loadedChannel.map(({ id, name }, idx) => {
+              loadedChannel.map(({ id, channelName }, idx) => {
                 return (
                   <option value={id} key={idx}>
-                    {name}
+                    {channelName}
                   </option>
                 );
               })}
@@ -115,42 +123,29 @@ const ArticleComponent = ({
         )}
 
         <Form.Control as="select" value={sort} onChange={onChangeSort}>
-          <option value="createdAt,DESC">등록일 순</option>
-          <option value="createdAt,ASC">등록일 역순</option>
-          <option value="updatedAt,DESC">수정일 순</option>
-          <option value="updatedAt,ASC">수정일 역순</option>
+          {sortList.map((v, idx) => (
+            <option value={v.value} key={idx}>
+              {v.text}
+            </option>
+          ))}
         </Form.Control>
       </Field>
     </SearchBar>
     <ListWrap className="p-3" onScroll={onScrollInList}>
       {loadedData && loadedData.length > 0 ? (
-        loadedData.map((data) => {
+        loadedData.map(data => {
           if (type === "프로그램") {
-            return (
-              <ProgramCardComponent
-                key={data.id}
-                {...data}
-                onClickItem={onClickItem}
-              />
-            );
+            return <ProgramCardComponent key={`pgm${data.id}`} {...data} />;
           } else if (type === "콘텐츠") {
-            return (
-              <ContentCardComponent
-                key={data.id}
-                {...data}
-                onClickItem={onClickItem}
-              />
-            );
-          }
-          // else if (type === "포스트") {
-          //   return <PostCardComponent {...data} onClickItem={onClickItem} />
-          // }
-          else {
-            return null;
+            return <ContentCardComponent key={`content${data.id}`} {...data} />;
+          } else if (type === "포스트") {
+            return <PostCardComponent key={`post${data.id}`} {...data} />;
+          } else if (type === "사용자") {
+            return <UserCardComponent key={`list${data.id}`} {...data} />;
           }
         })
       ) : isLoadingData ? (
-        <LoadingComponent />
+        <LoadingComponent height={30} />
       ) : (
         <EmptyComponent comment={"검색 결과가 없습니다."} />
       )}
@@ -160,19 +155,24 @@ const ArticleComponent = ({
 export default ArticleComponent;
 
 ArticleComponent.propTypes = {
+  sortList: PropTypes.arrayOf(
+    PropTypes.shape({
+      text: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired
+    })
+  ),
   isLoadingData: PropTypes.bool.isRequired,
-  loadedData: PropTypes.arrayOf(PropTypes.object),
   isActive: PropTypes.bool.isRequired,
-  startDate: PropTypes.object.isRequired,
-  endDate: PropTypes.object.isRequired,
-  setStartDate: PropTypes.func.isRequired,
-  setEndDate: PropTypes.func.isRequired,
+  startDate: PropTypes.object,
+  endDate: PropTypes.object,
+  setStartDate: PropTypes.func,
+  setEndDate: PropTypes.func,
   searchKeyword: PropTypes.string.isRequired,
   sort: PropTypes.string.isRequired,
   onChangeSearchKeyword: PropTypes.func.isRequired,
   onChangeSort: PropTypes.func.isRequired,
-  onClickAddBtn: PropTypes.func.isRequired,
-  onClickItem: PropTypes.func.isRequired,
+  onClickAddBtn: PropTypes.func,
   onKeyDownSearchKeyword: PropTypes.func.isRequired,
-  onClickSearchBtn: PropTypes.func.isRequired
+  onClickSearchBtn: PropTypes.func.isRequired,
+  onScrollInList: PropTypes.func.isRequired
 };

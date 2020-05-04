@@ -7,15 +7,17 @@ import {
   HIDE_UPDATECONTENTMODAL,
   SHOW_SEARCHCASTMODAL
 } from "../reducers/common";
-import { SELECT_PROGRAM } from "../reducers/program";
+import { SELECT_PROGRAM, INIT_SELECTEDPROGRAM } from "../reducers/program";
 import {
   ADD_CONTENTITEM_REQUEST,
   UPDATE_CONTENTITEM_REQUEST,
-  INACTIVE_CONTENTITEM,
+  INACTIVE_CONTENTITEM
+} from "../reducers/content";
+import {
   REMOVE_SELECTEDCAST,
   INIT_SELECTEDCAST,
   SELECT_CAST
-} from "../reducers/content";
+} from "../reducers/cast";
 import moment from "moment";
 import axios from "axios";
 import { showToast } from "../module/toast";
@@ -23,8 +25,9 @@ import { showToast } from "../module/toast";
 const SetContentModalContainer = () => {
   const dispatch = useDispatch();
 
-  const { activeContent, selectedCast } = useSelector((state) => state.content); // 선택한 콘텐츠 ( 수정 여부 판단 )}
-  const { selectedProgram } = useSelector((state) => state.program); //
+  const { activeContent } = useSelector(state => state.content);
+  const { selectedProgram } = useSelector(state => state.program);
+  const { selectedCast } = useSelector(state => state.cast);
 
   const videoEl = useRef(null);
   const descriptionEl = useRef(null);
@@ -52,6 +55,9 @@ const SetContentModalContainer = () => {
     });
     dispatch({
       type: INACTIVE_CONTENTITEM
+    });
+    dispatch({
+      type: INIT_SELECTEDPROGRAM
     });
     dispatch({
       type: INIT_SELECTEDCAST
@@ -93,7 +99,7 @@ const SetContentModalContainer = () => {
     }
   }, []);
 
-  const onChangeVideo = useCallback(async (e) => {
+  const onChangeVideo = useCallback(async e => {
     // 파일 선택창에서 취소 버튼을 누른 경우
     if (!e.target.value) return;
 
@@ -140,7 +146,7 @@ const SetContentModalContainer = () => {
     }
   }, []);
 
-  const onChangeDescription = useCallback((e) => {
+  const onChangeDescription = useCallback(e => {
     setDescription(e.target.value);
   }, []);
 
@@ -205,7 +211,7 @@ const SetContentModalContainer = () => {
         broadcastedAt
       } = activeContent;
       setType("수정");
-      setDescription(description);
+      setDescription(description || "");
       setBroadcastDate(new Date(broadcastedAt));
       dispatch({
         type: SELECT_CAST,

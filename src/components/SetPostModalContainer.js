@@ -1,51 +1,91 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SetPostModalPresentaion from "./SetPostModalPresentation";
-import { HIDE_ADDPOSTMODAL, SHOW_SEARCHPROGRAMMODAL } from "../reducers/common";
-import { ADD_POSTITEM_REQUEST } from "../reducers/post";
-import { SELECT_CONTENTLIST_REQUEST } from "../reducers/content";
+import {
+  HIDE_ADDPOSTMODAL,
+  SHOW_SEARCHPROGRAMMODAL,
+  HIDE_UPDATEPOSTMODAL
+} from "../reducers/common";
+import {
+  ADD_POSTITEM_REQUEST,
+  UPDATE_POSTITEM_REQUEST,
+  INACTIVE_POSTITEM
+} from "../reducers/post";
+import { SELECT_PROGRAM, INIT_SELECTEDPROGRAM } from "../reducers/program";
+import {
+  SELECT_CONTENTLIST_REQUEST,
+  INIT_SELECTEDCONTENT
+} from "../reducers/content";
 
 const SetPostModalContainer = () => {
   const dispatch = useDispatch();
 
-  const { selectedProgram } = useSelector((state) => state.program);
-  const { selectedContent } = useSelector((state) => state.content);
-  const { userInfo } = useSelector((state) => state.user);
+  const { selectedProgram } = useSelector(state => state.program);
+  const { selectedContent } = useSelector(state => state.content);
+  const { activePost, isAddItemLoading, isUpdateItemLoading } = useSelector(
+    state => state.post
+  );
+  const { userInfo } = useSelector(state => state.user);
 
   const titleEl = useRef(null);
   const descriptionEl = useRef(null);
   const thumbnailEl = useRef(null);
 
+  const [type, setType] = useState("등록"); // 등록, 수정 구분
   const [title, setTitle] = useState(""); // 포스트 제목
   const [description, setDescription] = useState(""); // 포스트 내용
   const [tags, setTags] = useState([]); // 포스트 태그
   const [thumbnail, setThumbnail] = useState(""); // 썸네일 미리보기
   const [selectedFile, setSelectedFile] = useState(null); // 썸네일 파일 데이터
-  const [epiNumber, setEpiNumber] = useState(-1); // 해당 프로그램의 화수
+  const [contentId, setContentId] = useState(-1); // 컨텐츠 아이디
+  const [frame, setFrame] = useState(""); // 편집된 영상의 프레임(start,end)
 
   // 모달 끄기
   const onHide = useCallback(() => {
     dispatch({
       type: HIDE_ADDPOSTMODAL
     });
+    dispatch({
+      type: HIDE_UPDATEPOSTMODAL
+    });
+    dispatch({
+      type: INIT_SELECTEDPROGRAM
+    });
+    dispatch({
+      type: INIT_SELECTEDCONTENT
+    });
+    dispatch({
+      type: INACTIVE_POSTITEM
+    });
   }, [dispatch]);
 
   // 영상 편집 하기
   const onClickEditVideo = useCallback(() => {
-    const { epiNumber, Program } = selectedContent[0];
+    const { epiNumber, Program, Videos } = selectedContent.filter(
+      v => v.id == contentId
+    )[0];
     const { src: thumb_url } = Program.Images[0];
-    const {
-      runtime,
-      src: video_url,
-      ContentId,
-      framerate
-    } = selectedContent[0].Videos[0];
-    var opener = window.open(
-      `../../public/nle.html?refid=${ContentId}&usernm=${userInfo.userId}&title=${Program.title}-${epiNumber}&thumb_url=${thumb_url}&video_url=${video_url}&runtime=${runtime}&framerate=${framerate}`,
+    const { runtime, src: video_url, ContentId, framerate } = Videos[0];
+    const opener = window.open(
+      `../../public/nle.html?refid=${ContentId}&usernm=${
+        userInfo.userId
+      }&title=${encodeURIComponent(
+        Program.title
+      )}-${epiNumber}&thumb_url=${thumb_url}&video_url=${video_url}&runtime=${runtime}&framerate=${framerate}`,
       "nle"
     );
     opener.focus();
-  }, [selectedContent, userInfo]);
+    const interval = setInterval(() => {
+      try {
+        if (!opener || opener.closed) {
+          clearInterval(interval);
+          setFrame(document.querySelector("#export").value);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }, 1000);
+  }, [selectedContent, userInfo, contentId]);
 
   // 프로그램 검색 버튼
   const onClickShowPgmModal = useCallback(() => {
@@ -54,23 +94,23 @@ const SetPostModalContainer = () => {
     });
   }, [dispatch]);
 
-  const onChangeTitle = useCallback((e) => {
+  const onChangeTitle = useCallback(e => {
     setTitle(e.target.value);
   }, []);
 
-  const onChangeDescription = useCallback((e) => {
+  const onChangeDescription = useCallback(e => {
     setDescription(e.target.value);
   }, []);
 
-  const onChangeEpiNumber = useCallback((e) => {
-    setEpiNumber(e.target.value);
+  const onChangeContentId = useCallback(e => {
+    console.log(e.target.value);
   }, []);
 
   const onClickThumbnail = useCallback(() => {
     thumbnailEl.current.click();
   }, []);
 
-  const onChangeThumbnail = useCallback((e) => {
+  const onChangeThumbnail = useCallback(e => {
     // 파일 선택창에서 취소 버튼을 누른 경우
     if (!e.target.value) return;
     const reader = new FileReader();
@@ -85,6 +125,13 @@ const SetPostModalContainer = () => {
   }, []);
   // 포스트 등록
   const onSubmit = useCallback(() => {
+    if (type === "등록") {
+      if (contentId == -1) {
+        alert("프로그램을 선택하세요.");
+        return;
+      }
+    }
+
     if (!title) {
       alert("제목을 입력하세요.");
       titleEl.current.focus();
@@ -100,16 +147,50 @@ const SetPostModalContainer = () => {
       descriptionEl.current.focus();
       return;
     }
+
     dispatch({
-      type: ADD_POSTITEM_REQUEST,
+      type: activePost ? UPDATE_POSTITEM_REQUEST : ADD_POSTITEM_REQUEST,
       payload: {
+        id: activePost ? activePost.id : null,
+        contentId,
         title,
         description,
         tags,
-        selectedFile
+        selectedFile,
+        frame
       }
     });
-  }, [title, description, tags, selectedFile, dispatch]);
+  }, [
+    title,
+    description,
+    tags,
+    selectedFile,
+    frame,
+    selectedProgram,
+    contentId,
+    activePost,
+    dispatch
+  ]);
+  // 수정 시 기본 값 설정
+  useEffect(() => {
+    if (activePost) {
+      const { title, description, tag, Images } = activePost;
+      setType("수정");
+      setTitle(title);
+      setDescription(description || "");
+      setTags(tag.split(","));
+      if (Images.length > 0) {
+        setThumbnail(
+          `${process.env.REACT_APP_BACKEND_HOST}/images/${Images[0].src}`
+        );
+      }
+
+      dispatch({
+        type: SELECT_PROGRAM,
+        payload: activePost.Content.Program
+      });
+    }
+  }, [activePost]);
 
   // 프로그램 선택에 따른 컨텐츠 정보 로드
   useEffect(() => {
@@ -126,20 +207,27 @@ const SetPostModalContainer = () => {
   // 컨텐츠 정보 로드 시 업데이트
   useEffect(() => {
     if (selectedContent) {
-      setEpiNumber(selectedContent[0].id);
-      console.log(selectedContent[0].id);
+      // 수정모드인 경우
+      if (activePost) {
+        setContentId(activePost.Content.id);
+      } else {
+        setContentId(selectedContent[0].id);
+      }
     }
-  }, [selectedContent, dispatch]);
+  }, [selectedContent, activePost, dispatch]);
 
   return (
     <SetPostModalPresentaion
+      type={type}
+      isAddItemLoading={isAddItemLoading}
+      isUpdateItemLoading={isUpdateItemLoading}
       selectedProgram={selectedProgram}
       selectedContent={selectedContent}
       title={title}
       titleEl={titleEl}
       description={description}
       descriptionEl={descriptionEl}
-      epiNumber={epiNumber}
+      contentId={contentId}
       tags={tags}
       setTags={setTags}
       thumbnail={thumbnail}
@@ -150,7 +238,7 @@ const SetPostModalContainer = () => {
       onClickEditVideo={onClickEditVideo}
       onChangeTitle={onChangeTitle}
       onChangeDescription={onChangeDescription}
-      onChangeEpiNumber={onChangeEpiNumber}
+      onChangeContentId={onChangeContentId}
       onChangeThumbnail={onChangeThumbnail}
       onSubmit={onSubmit}
     />

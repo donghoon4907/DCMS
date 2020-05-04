@@ -6,13 +6,13 @@ import {
   SEARCH_CASTLIST_REQUEST,
   SELECT_CAST,
   INIT_SEARCHEDCAST
-} from "../reducers/content";
+} from "../reducers/cast";
 
 const SearchCastModalContainer = () => {
   const dispatch = useDispatch();
 
   const { isSearchCastListLoading, searchedCast, selectedCast } = useSelector(
-    state => state.content
+    state => state.cast
   );
 
   const searchKeywordEl = useRef(null);
