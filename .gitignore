@@ -1,6 +1,6 @@
-node_modules
-.vscode
-dist
-.env
-public
-src/nle/*
+/node_modules
+/.vscode
+/dist
+/.env
+/public
+/src/nle/*
