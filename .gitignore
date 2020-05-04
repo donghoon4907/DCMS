@@ -3,4 +3,4 @@ node_modules
 dist
 .env
 public
-src/nle/gve.min.js
+src/nle/*
