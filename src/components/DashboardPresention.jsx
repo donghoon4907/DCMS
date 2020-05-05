@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button } from "react-bootstrap";
+import { Button, OverlayTrigger, Popover, Badge } from "react-bootstrap";
 import {
   Container,
   AsideMenu,
@@ -33,6 +33,7 @@ const DashboardPresentation = ({
   isShowPostCommentUi,
   isShowYoutubeUploadUi,
   onClickMenuIcon,
+  onClickAlertItem,
   onLogout
 }) => (
   <Container>
@@ -89,8 +90,53 @@ const DashboardPresentation = ({
             </InputGroup.Prepend>
           </InputGroup> */}
         </div>
-        <div style={{ paddingRight: 20 }}>
-          <Button style={{ background: "#3EA9F1" }} onClick={onLogout}>
+        <div
+          style={{
+            paddingRight: 20
+          }}
+        >
+          <OverlayTrigger
+            trigger="click"
+            placement="bottom"
+            overlay={
+              <Popover>
+                {userInfo && userInfo.SendNews.length > 0 ? (
+                  userInfo.SendNews.filter(
+                    v => v.PostId && v.type === "regdate"
+                  ).map((v, idx) => (
+                    <Popover.Content
+                      key={`alert${idx}`}
+                      onClick={() => onClickAlertItem(v.User.id, v.id)}
+                      style={{ cursor: "pointer", width: 200 }}
+                    >
+                      {v.User.userId}님이
+                      <br />
+                      새로운 포스트를 게시했습니다.
+                    </Popover.Content>
+                  ))
+                ) : (
+                  <Popover.Content style={{ width: 200 }}>
+                    알림이 없습니다.
+                  </Popover.Content>
+                )}
+              </Popover>
+            }
+          >
+            <Button style={{ width: 80 }} variant="info">
+              알림
+              <Badge variant="warning" style={{ marginLeft: 5 }}>
+                {userInfo &&
+                  userInfo.SendNews.filter(
+                    v => v.PostId && v.type === "regdate"
+                  ).length}
+              </Badge>
+            </Button>
+          </OverlayTrigger>
+
+          <Button
+            style={{ background: "#3EA9F1", marginLeft: 10 }}
+            onClick={onLogout}
+          >
             로그아웃
           </Button>
         </div>

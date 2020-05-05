@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DashboardPresention from "./DashboardPresention";
-import { LOG_OUT_REQUEST } from "../reducers/user";
+import { LOG_OUT_REQUEST, REMOVE_ALERT_REQUEST } from "../reducers/user";
 
 const DashboardContainer = () => {
   const dispatch = useDispatch();
@@ -34,6 +34,17 @@ const DashboardContainer = () => {
     }
   }, [dispatch]);
 
+  // 알림 클릭
+  const onClickAlertItem = useCallback((userId, logId) => {
+    dispatch({
+      type: REMOVE_ALERT_REQUEST,
+      payload: {
+        userId,
+        logId
+      }
+    });
+  }, []);
+
   return (
     <DashboardPresention
       userInfo={userInfo}
@@ -49,6 +60,7 @@ const DashboardContainer = () => {
       isShowPostCommentUi={isShowPostCommentUi}
       isShowYoutubeUploadUi={isShowYoutubeUploadUi}
       onClickMenuIcon={onClickMenuIcon}
+      onClickAlertItem={onClickAlertItem}
       onLogout={onLogout}
     />
   );

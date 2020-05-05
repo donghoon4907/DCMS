@@ -11,14 +11,10 @@ export const ADD_CONTENTITEM_FAILURE = "ADD_CONTENTITEM_FAILURE";
 export const UPDATE_CONTENTITEM_REQUEST = "UPDATE_CONTENTITEM_REQUEST";
 export const UPDATE_CONTENTITEM_SUCCESS = "UPDATE_CONTENTITEM_SUCCESS";
 export const UPDATE_CONTENTITEM_FAILURE = "UPDATE_CONTENTITEM_FAILURE";
-// 목록 초기화
-export const INIT_CONTENTLIST = "INIT_CONTENTLIST";
 // 특정 콘텐츠 활성화
 export const ACTIVE_CONTENTITEM = "ACTIVE_CONTENTITEM";
 // 특정 콘텐츠 비활성화
 export const INACTIVE_CONTENTITEM = "INACTIVE_CONTENTITEM";
-// 등록 초기화
-export const INIT_ADDCONTENT = "INIT_ADDCONTENT";
 // 선택한 프로그램의 콘텐츠 정보 로드
 export const SELECT_CONTENTLIST_REQUEST = "SELECT_CONTENTLIST_REQUEST";
 export const SELECT_CONTENTLIST_SUCCESS = "SELECT_CONTENTLIST_SUCCESS";
@@ -50,6 +46,7 @@ export default (state = initialState, action) =>
     switch (action.type) {
       case GET_CONTENTLIST_REQUEST: {
         draft.isGetListLoading = true;
+        draft.isSuccessAddItem = false;
         if (action.payload.lastId === 0) draft.loadedContent = [];
         break;
       }
@@ -98,14 +95,6 @@ export default (state = initialState, action) =>
       case UPDATE_CONTENTITEM_FAILURE: {
         draft.isUpdateItemLoading = false;
         draft.updateItemErrorReason = action.payload;
-        break;
-      }
-      case INIT_CONTENTLIST: {
-        draft.loadedContent = null;
-        break;
-      }
-      case INIT_ADDCONTENT: {
-        draft.isSuccessAddItem = false;
         break;
       }
       case ACTIVE_CONTENTITEM: {

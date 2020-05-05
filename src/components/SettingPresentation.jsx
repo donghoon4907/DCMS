@@ -6,25 +6,20 @@ import ArticleComponent from "./ArticleComponent";
 const SettingPresentation = ({
   activeMenu,
   userSortList,
+  onlyFollower,
+  onlyFollowing,
   loadedUser,
-  loadedFollower,
   isLoadingUser,
-  isGetFollowerListLoading,
   userSearchKeyword,
-  followerSearchKeyword,
   userSort,
-  followerSort,
   onClickSubMenuItem,
   onClickUserSearchBtn,
-  onClickFollowerSearchBtn,
   onChangeUserSearchKeyword,
-  onChangeFollowerSearchKeyword,
   onChangeUserSort,
-  onChangeFollowerSort,
+  onChangeOnlyFollower,
+  onChangeOnlyFollowing,
   onKeyDownUserSearchKeyword,
-  onKeyDownFollowerSearchKeyword,
-  onScrollInUserList,
-  onScrollInFollowerList
+  onScrollInUserList
 }) => (
   <>
     <SubMenu>
@@ -52,24 +47,14 @@ const SettingPresentation = ({
       >
         <span>채널 관리</span>
       </SubMenuItem>
-      <SubMenuItem
-        active={activeMenu === 5 && 1}
-        onClick={() => onClickSubMenuItem(5)}
-      >
-        <span>팔로워 목록</span>
-      </SubMenuItem>
-      <SubMenuItem
-        active={activeMenu === 6 && 1}
-        onClick={() => onClickSubMenuItem(6)}
-      >
-        <span>팔로잉 관리</span>
-      </SubMenuItem>
     </SubMenu>
     <Article>
       <ArticleComponent
         type={"사용자"}
         isActive={activeMenu === 1}
         sortList={userSortList}
+        onlyFollower={onlyFollower}
+        onlyFollowing={onlyFollowing}
         isLoadingData={isLoadingUser}
         loadedData={loadedUser}
         searchKeyword={userSearchKeyword}
@@ -77,22 +62,10 @@ const SettingPresentation = ({
         onClickSearchBtn={onClickUserSearchBtn}
         onChangeSearchKeyword={onChangeUserSearchKeyword}
         onChangeSort={onChangeUserSort}
+        onChangeOnlyFollower={onChangeOnlyFollower}
+        onChangeOnlyFollowing={onChangeOnlyFollowing}
         onKeyDownSearchKeyword={onKeyDownUserSearchKeyword}
         onScrollInList={onScrollInUserList}
-      />
-      <ArticleComponent
-        type={"사용자"}
-        isActive={activeMenu === 5}
-        sortList={userSortList}
-        isLoadingData={isGetFollowerListLoading}
-        loadedData={loadedFollower}
-        searchKeyword={followerSearchKeyword}
-        sort={followerSort}
-        onClickSearchBtn={onClickFollowerSearchBtn}
-        onChangeSearchKeyword={onChangeFollowerSearchKeyword}
-        onChangeSort={onChangeFollowerSort}
-        onKeyDownSearchKeyword={onKeyDownFollowerSearchKeyword}
-        onScrollInList={onScrollInFollowerList}
       />
     </Article>
   </>

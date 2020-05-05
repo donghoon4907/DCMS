@@ -9,22 +9,12 @@ import {
 } from "../reducers/common";
 import {
   GET_PROGRAMLIST_REQUEST,
-  INIT_PROGRAMLIST,
-  INIT_ADDPROGRAM,
   GET_AGEGRADELIST_REQUEST
 } from "../reducers/program";
 import { GET_GENRELIST_REQUEST } from "../reducers/genre";
 import { GET_CHANNELLIST_REQUEST } from "../reducers/channel";
-import {
-  GET_CONTENTLIST_REQUEST,
-  INIT_CONTENTLIST,
-  INIT_ADDCONTENT
-} from "../reducers/content";
-import {
-  GET_POSTLIST_REQUEST,
-  INIT_POSTLIST,
-  INIT_ADDPOST
-} from "../reducers/post";
+import { GET_CONTENTLIST_REQUEST } from "../reducers/content";
+import { GET_POSTLIST_REQUEST } from "../reducers/post";
 import { makeSortList } from "../module/query";
 
 const PublishContainer = () => {
@@ -97,9 +87,6 @@ const PublishContainer = () => {
       if (isLoadingPgm) return;
       setPgmSort(e.target.value);
       dispatch({
-        type: INIT_PROGRAMLIST
-      });
-      dispatch({
         type: GET_PROGRAMLIST_REQUEST,
         payload: {
           lastId: 0,
@@ -127,9 +114,6 @@ const PublishContainer = () => {
       if (isLoadingContent) return;
       setContentSort(e.target.value);
       dispatch({
-        type: INIT_CONTENTLIST
-      });
-      dispatch({
         type: GET_CONTENTLIST_REQUEST,
         payload: {
           lastId: 0,
@@ -155,9 +139,6 @@ const PublishContainer = () => {
       if (isLoadingPost) return;
       setPostSort(e.target.value);
       dispatch({
-        type: INIT_POSTLIST
-      });
-      dispatch({
         type: GET_POSTLIST_REQUEST,
         payload: {
           lastId: 0,
@@ -176,9 +157,6 @@ const PublishContainer = () => {
     e => {
       if (isLoadingPgm) return;
       setPgmChannel(e.target.value);
-      dispatch({
-        type: INIT_PROGRAMLIST
-      });
       dispatch({
         type: GET_PROGRAMLIST_REQUEST,
         payload: {
@@ -234,9 +212,6 @@ const PublishContainer = () => {
       if (isLoadingPgm) return;
       if (e.key === "Enter") {
         dispatch({
-          type: INIT_PROGRAMLIST
-        });
-        dispatch({
           type: GET_PROGRAMLIST_REQUEST,
           payload: {
             lastId: 0,
@@ -255,9 +230,6 @@ const PublishContainer = () => {
   // 프로그램 클릭 검색
   const onClickPgmSearchBtn = useCallback(() => {
     if (isLoadingPgm) return;
-    dispatch({
-      type: INIT_PROGRAMLIST
-    });
     dispatch({
       type: GET_PROGRAMLIST_REQUEST,
       payload: {
@@ -278,9 +250,6 @@ const PublishContainer = () => {
       if (isLoadingContent) return;
       if (e.key === "Enter") {
         dispatch({
-          type: INIT_CONTENTLIST
-        });
-        dispatch({
           type: GET_CONTENTLIST_REQUEST,
           payload: {
             lastId: 0,
@@ -298,9 +267,6 @@ const PublishContainer = () => {
   // 컨텐츠 클릭 검색
   const onClickContentSearchBtn = useCallback(() => {
     if (isLoadingContent) return;
-    dispatch({
-      type: INIT_CONTENTLIST
-    });
     dispatch({
       type: GET_CONTENTLIST_REQUEST,
       payload: {
@@ -326,9 +292,6 @@ const PublishContainer = () => {
       if (isLoadingPost) return;
       if (e.key === "Enter") {
         dispatch({
-          type: INIT_POSTLIST
-        });
-        dispatch({
           type: GET_POSTLIST_REQUEST,
           payload: {
             lastId: 0,
@@ -346,9 +309,6 @@ const PublishContainer = () => {
   // 포스트 클릭 검색
   const onClickPostSearchBtn = useCallback(() => {
     if (isLoadingPost) return;
-    dispatch({
-      type: INIT_POSTLIST
-    });
     dispatch({
       type: GET_POSTLIST_REQUEST,
       payload: {
@@ -472,9 +432,8 @@ const PublishContainer = () => {
       );
       setPgmEndDate(new Date());
       setPgmSearchKeyword("");
-      setPgmSort("createdAt,DESC");
+      setPgmSort("createdAt,desc");
       setPgmChannel("");
-      dispatch({ type: INIT_PROGRAMLIST });
       dispatch({
         type: GET_PROGRAMLIST_REQUEST,
         payload: {
@@ -486,7 +445,6 @@ const PublishContainer = () => {
           endDate: moment().format("YYYY-MM-DD")
         }
       });
-      dispatch({ type: INIT_ADDPROGRAM });
     }
   }, [isSuccessAddPgm, dispatch]);
 
@@ -500,8 +458,7 @@ const PublishContainer = () => {
       );
       setContentEndDate(new Date());
       setContentSearchKeyword("");
-      setContentSort("createdAt,DESC");
-      dispatch({ type: INIT_CONTENTLIST });
+      setContentSort("createdAt,desc");
       dispatch({
         type: GET_CONTENTLIST_REQUEST,
         payload: {
@@ -513,7 +470,6 @@ const PublishContainer = () => {
           endDate: moment().format("YYYY-MM-DD")
         }
       });
-      dispatch({ type: INIT_ADDCONTENT });
     }
   }, [isSuccessAddContent, dispatch]);
 
@@ -527,7 +483,7 @@ const PublishContainer = () => {
       );
       setPostEndDate(new Date());
       setPostSearchKeyword("");
-      dispatch({ type: INIT_POSTLIST });
+      setPostSort("createdAt,desc");
       dispatch({
         type: GET_POSTLIST_REQUEST,
         payload: {
@@ -539,12 +495,11 @@ const PublishContainer = () => {
           endDate: moment().format("YYYY-MM-DD")
         }
       });
-      dispatch({ type: INIT_ADDPOST });
     }
   }, [isSuccessAddPost, dispatch]);
 
   useEffect(() => {
-    // 프로그램 목록을 가져옵니다.
+    // 프로그램 목록 로드
     dispatch({
       type: GET_PROGRAMLIST_REQUEST,
       payload: {
@@ -556,6 +511,7 @@ const PublishContainer = () => {
         endDate: moment().format("YYYY-MM-DD")
       }
     });
+    // 컨텐츠 목록 로드
     dispatch({
       type: GET_CONTENTLIST_REQUEST,
       payload: {
@@ -567,7 +523,7 @@ const PublishContainer = () => {
         endDate: moment().format("YYYY-MM-DD")
       }
     });
-    // 포스트 목록을 가져옵니다.
+    // 포스트 목록 로드
     dispatch({
       type: GET_POSTLIST_REQUEST,
       payload: {
@@ -579,15 +535,15 @@ const PublishContainer = () => {
         endDate: moment().format("YYYY-MM-DD")
       }
     });
-    // 장르 목록을 가져옵니다.
+    // 장르 목록 로드
     dispatch({
       type: GET_GENRELIST_REQUEST
     });
-    // 연령등급 목록을 가져옵니다.
+    // 연령등급 목록 로드
     dispatch({
       type: GET_AGEGRADELIST_REQUEST
     });
-    // 채널 목록을 가져옵니다.
+    // 채널 목록 로드
     dispatch({
       type: GET_CHANNELLIST_REQUEST
     });

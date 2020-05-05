@@ -35,9 +35,9 @@ import {
   GET_USERLIST_REQUEST,
   GET_USERLIST_SUCCESS,
   GET_USERLIST_FAILURE,
-  GET_FOLLOWERLIST_REQUEST,
-  GET_FOLLOWERLIST_SUCCESS,
-  GET_FOLLOWERLIST_FAILURE
+  REMOVE_ALERT_REQUEST,
+  REMOVE_ALERT_SUCCESS,
+  REMOVE_ALERT_FAILURE
 } from "../reducers/user";
 import { SHOW_LOGINLAYER, SHOW_DASHBOARD } from "../reducers/common";
 import { axiosErrorHandle } from "../module/error";
@@ -127,13 +127,21 @@ function removeFollowingUserAPI({ id }) {
 }
 function getListAPI(payload) {
   return axios
-    .get(makeListQuery({ type: "user", ...payload }))
+    .post(
+      makeListQuery({ type: "user", ...payload }),
+      {},
+      {
+        withCredentials: true
+      }
+    )
     .then(response => ({ response }))
     .catch(error => ({ error }));
 }
-function getFollowerListAPI(payload) {
+function removeAlertAPI({ userId, logId }) {
   return axios
-    .get(makeListQuery({ type: `user/follower/${payload.id}`, ...payload }))
+    .delete(`/user/alert/${userId}/${logId}`, {
+      withCredentials: true
+    })
     .then(response => ({ response }))
     .catch(error => ({ error }));
 }
@@ -204,15 +212,10 @@ function* logIn(action) {
   const { response, error } = yield call(logInAPI, action.payload);
   if (response) {
     yield put({
-      type: LOG_IN_SUCCESS,
-      payload: response.data
+      type: LOG_IN_SUCCESS
     });
     yield put({
-      type: SHOW_DASHBOARD
-    });
-    showToast({
-      type: "success",
-      message: `${response.data.userId}님 반갑습니다.`
+      type: LOAD_USER_REQUEST
     });
   } else if (error) {
     const { message, type } = axiosErrorHandle(error);
@@ -308,6 +311,7 @@ function* addFollowingUser(action) {
     }
   }
 }
+
 function* removeFollowingUser(action) {
   const { response, error } = yield call(
     removeFollowingUserAPI,
@@ -345,37 +349,47 @@ function* getList(action) {
       payload: response.data
     });
   } else if (error) {
-    const { message, type } = axiosErrorHandle(error);
-    yield put({
-      type: GET_USERLIST_FAILURE,
-      payload: message
-    });
-    showToast({
-      type,
-      message
-    });
+    const { message, type, isExpired } = axiosErrorHandle(error);
+    if (isExpired) {
+      window.location.reload();
+    } else {
+      yield put({
+        type: GET_USERLIST_FAILURE,
+        payload: message
+      });
+      showToast({
+        type,
+        message
+      });
+    }
   }
 }
 
-function* getFollowerList(action) {
-  const { response, error } = yield call(getFollowerListAPI, action.payload);
+function* removeAlert(action) {
+  const { response, error } = yield call(removeAlertAPI, action.payload);
   if (response) {
+    const { id } = response.data;
     yield put({
-      type: GET_FOLLOWERLIST_SUCCESS,
-      payload: response.data
+      type: REMOVE_ALERT_SUCCESS,
+      payload: id
     });
   } else if (error) {
-    const { message, type } = axiosErrorHandle(error);
-    yield put({
-      type: GET_USERLIST_FAILURE,
-      payload: message
-    });
-    showToast({
-      type,
-      message
-    });
+    const { message, type, isExpired } = axiosErrorHandle(error);
+    if (isExpired) {
+      window.location.reload();
+    } else {
+      yield put({
+        type: REMOVE_ALERT_FAILURE,
+        payload: message
+      });
+      showToast({
+        type,
+        message
+      });
+    }
   }
 }
+
 // 중복 확인
 function* watchDbCheck() {
   yield takeEvery(DOUBLE_CHECK_REQUEST, dbcheck);
@@ -412,9 +426,9 @@ function* watchRemoveFollowingUser() {
 function* watchGetList() {
   yield takeEvery(GET_USERLIST_REQUEST, getList);
 }
-// 팔로워 목록 로드
-function* watchGetFollowerList() {
-  yield takeEvery(GET_FOLLOWERLIST_REQUEST, getFollowerList);
+// 알람 삭제
+function* watchRemoveAlert() {
+  yield takeEvery(REMOVE_ALERT_REQUEST, removeAlert);
 }
 export default function*() {
   yield all([
@@ -427,6 +441,6 @@ export default function*() {
     fork(watchAddFollowingUser),
     fork(watchRemoveFollowingUser),
     fork(watchGetList),
-    fork(watchGetFollowerList)
+    fork(watchRemoveAlert)
   ]);
 }

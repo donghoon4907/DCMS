@@ -11,14 +11,10 @@ export const ADD_POSTITEM_FAILURE = "ADD_POSTITEM_FAILURE";
 export const UPDATE_POSTITEM_REQUEST = "UPDATE_POSTITEM_REQUEST";
 export const UPDATE_POSTITEM_SUCCESS = "UPDATE_POSTITEM_SUCCESS";
 export const UPDATE_POSTITEM_FAILURE = "UPDATE_POSTITEM_FAILURE";
-// 목록 초기화
-export const INIT_POSTLIST = "INIT_POSTLIST";
 // 특정 포스트 활성화
 export const ACTIVE_POSTITEM = "ACTIVE_POSTITEM";
 // 특정 포스트 비활성화
 export const INACTIVE_POSTITEM = "INACTIVE_POSTITEM";
-// 등록 초기화
-export const INIT_ADDPOST = "INIT_ADDPOST";
 // 좋아요
 export const ADD_LIKEPOST_REQUEST = "ADD_LIKEPOST_REQUEST";
 export const ADD_LIKEPOST_SUCCESS = "ADD_LIKEPOST_SUCCESS";
@@ -69,6 +65,7 @@ export default (state = initialState, action) =>
     switch (action.type) {
       case GET_POSTLIST_REQUEST: {
         draft.isGetListLoading = true;
+        draft.isSuccessAddItem = false;
         if (action.payload.lastId === 0) draft.loadedPost = [];
         break;
       }
@@ -117,14 +114,6 @@ export default (state = initialState, action) =>
       case UPDATE_POSTITEM_FAILURE: {
         draft.isUpdateItemLoading = false;
         draft.updateItemErrorReason = action.payload;
-        break;
-      }
-      case INIT_POSTLIST: {
-        draft.loadedPost = null;
-        break;
-      }
-      case INIT_ADDPOST: {
-        draft.isSuccessAddItem = false;
         break;
       }
       case ACTIVE_POSTITEM: {

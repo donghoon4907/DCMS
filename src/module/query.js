@@ -10,7 +10,9 @@ export const makeListQuery = payload => {
     endDate,
     sort,
     channel,
-    programId
+    programId,
+    onlyFollower,
+    onlyFollowing
   } = payload;
 
   let result = `/${type}/list?req_type=list`;
@@ -23,6 +25,8 @@ export const makeListQuery = payload => {
   if (sort) result += `&sort=${sort}`;
   if (channel) result += `&channel=${channel}`;
   if (programId) result += `&programId=${programId}`;
+  if (onlyFollower) result += `&onlyFollower=Y`;
+  if (onlyFollowing) result += `&onlyFollowing=Y`;
   return result;
 };
 

@@ -103,7 +103,7 @@ const SetPostModalContainer = () => {
   }, []);
 
   const onChangeContentId = useCallback(e => {
-    console.log(e.target.value);
+    setContentId(e.target.value);
   }, []);
 
   const onClickThumbnail = useCallback(() => {

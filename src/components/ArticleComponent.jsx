@@ -19,6 +19,8 @@ import UserCardComponent from "./UserCardComponent";
 const ArticleComponent = ({
   type,
   sortList,
+  onlyFollower,
+  onlyFollowing,
   isLoadingData,
   loadedData,
   loadedChannel,
@@ -30,12 +32,14 @@ const ArticleComponent = ({
   searchKeyword,
   sort,
   channel,
+  onClickAddBtn,
+  onClickSearchBtn,
   onChangeSearchKeyword,
   onChangeSort,
   onChangeChannel,
-  onClickAddBtn,
+  onChangeOnlyFollower,
+  onChangeOnlyFollowing,
   onKeyDownSearchKeyword,
-  onClickSearchBtn,
   onScrollInList
 }) => (
   <WorkWrap active={isActive && 1}>
@@ -100,6 +104,25 @@ const ArticleComponent = ({
       <Field flex={3}>
         {onClickAddBtn && (
           <StyledButton onClick={onClickAddBtn}>{type} 등록</StyledButton>
+        )}
+        {type === "사용자" && (
+          <>
+            <Form.Check
+              type="switch"
+              id="follower"
+              label="팔로워 보기"
+              checked={onlyFollower}
+              onChange={onChangeOnlyFollower}
+            />
+            <Form.Check
+              type="switch"
+              id="following"
+              label="팔로잉 보기"
+              checked={onlyFollowing}
+              onChange={onChangeOnlyFollowing}
+              style={{ marginLeft: 10 }}
+            />
+          </>
         )}
       </Field>
       <Field flex={1}>

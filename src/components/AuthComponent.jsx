@@ -8,16 +8,19 @@ import { LOAD_USER_REQUEST } from "../reducers/user";
 
 const AuthComponent = () => {
   const dispatch = useDispatch();
+
   const { isShowLoginUi, isShowSignUpUi } = useSelector(state => state.common);
   const { userInfo } = useSelector(state => state.user);
+
   useEffect(() => {
     setTimeout(() => {
-      // 로그인한 사용자의 세션 정보를 가져옴.
+      // 로그인한 사용자의 정보를 가져옴.
       dispatch({
         type: LOAD_USER_REQUEST
       });
     }, 1000);
   }, [dispatch]);
+
   return isShowLoginUi ? (
     <LoginContainer />
   ) : userInfo ? (

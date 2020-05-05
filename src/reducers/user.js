@@ -35,14 +35,10 @@ export const REMOVE_FOLLOWING_FAILURE = "REMOVE_FOLLOWING_FAILURE";
 export const GET_USERLIST_REQUEST = "GET_USERLIST_REQUEST";
 export const GET_USERLIST_SUCCESS = "GET_USERLIST_SUCCESS";
 export const GET_USERLIST_FAILURE = "GET_USERLIST_FAILURE";
-// 팔로워 목록 가져오기
-export const GET_FOLLOWERLIST_REQUEST = "GET_FOLLOWERLIST_REQUEST";
-export const GET_FOLLOWERLIST_SUCCESS = "GET_FOLLOWERLIST_SUCCESS";
-export const GET_FOLLOWERLIST_FAILURE = "GET_FOLLOWERLIST_FAILURE";
-// 목록 초기화
-export const INIT_USERLIST = "INIT_USERLIST";
-// 팔로워 목록 초기화
-export const INIT_FOLLOWERLIST = "INIT_FOLLOWERLIST";
+// 알림 삭제
+export const REMOVE_ALERT_REQUEST = "REMOVE_ALERT_REQUEST";
+export const REMOVE_ALERT_SUCCESS = "REMOVE_ALERT_SUCCESS";
+export const REMOVE_ALERT_FAILURE = "REMOVE_ALERT_FAILURE";
 
 export const initialState = {
   isDbCheckLoading: false, // 중복 확인 시도 중 여부
@@ -54,7 +50,7 @@ export const initialState = {
   isAddFollowingLoading: false, // 팔로잉 추가 시도 중 여부
   isRemoveFollowingLoading: false, // 팔로잉 삭제 시도 중 여부
   isGetListLoading: false, //  목록 가져오기 시도 중 여부
-  isGetFollowerListLoading: false, // 팔로워 목록 가져오기 시도 중 여부
+  isRemoveAlertLoading: false, // 알람 삭제 시도 중 여부
   confirmedId: null, // 현재 중복 확인된 아이디
   confirmedEmail: null, // 현재 검증된 이메일
   emailToken: null, // 이메일 검증 토큰
@@ -69,7 +65,7 @@ export const initialState = {
   addFollowingErrorReason: "", // 팔로잉 추가 요청 오류 사유
   removeFollowingErrorReason: "", // 팔로잉 삭제 요청 오류 사유
   getListErrorReason: "", // 목록 가져오기 요청 오류 사유
-  getFollowerListErrorReason: "", // 팔로워 목록 가져오기 요청 오류 사유
+  removeAlertErrorReason: "", // 알람 삭제 요청 오류 사유
   userInfo: null // 로그인한 유저 정보
 };
 
@@ -130,7 +126,6 @@ export default (state = initialState, action) =>
       }
       case LOG_IN_SUCCESS: {
         draft.isLogInLoading = false;
-        draft.userInfo = action.payload;
         break;
       }
       case LOG_IN_FAILURE: {
@@ -207,6 +202,7 @@ export default (state = initialState, action) =>
       }
       case GET_USERLIST_REQUEST: {
         draft.isGetListLoading = true;
+        if (action.payload.lastId === 0) draft.loadedUser = [];
         break;
       }
       case GET_USERLIST_SUCCESS: {
@@ -220,31 +216,25 @@ export default (state = initialState, action) =>
       }
       case GET_USERLIST_FAILURE: {
         draft.isGetListLoading = false;
+        draft.getListErrorReason = action.payload;
         break;
       }
-      case INIT_USERLIST: {
-        draft.loadedUser = null;
+      case REMOVE_ALERT_REQUEST: {
+        draft.isRemoveAlertLoading = true;
         break;
       }
-      case GET_FOLLOWERLIST_REQUEST: {
-        draft.isGetFollowerListLoading = true;
+      case REMOVE_ALERT_SUCCESS: {
+        draft.isRemoveAlertLoading = false;
+        const newState = {
+          ...state.userInfo,
+          SendNews: state.userInfo.SendNews.filter(v => v.id != action.payload)
+        };
+        draft.userInfo = newState;
         break;
       }
-      case GET_FOLLOWERLIST_SUCCESS: {
-        draft.isGetFollowerListLoading = false;
-        if (draft.loadedFollower) {
-          draft.loadedFollower = draft.loadedFollower.concat(action.payload);
-        } else {
-          draft.loadedFollower = action.payload;
-        }
-        break;
-      }
-      case GET_FOLLOWERLIST_FAILURE: {
-        draft.isGetFollowerListLoading = false;
-        break;
-      }
-      case INIT_FOLLOWERLIST: {
-        draft.loadedFollower = null;
+      case REMOVE_ALERT_FAILURE: {
+        draft.isRemoveAlertLoading = false;
+        draft.removeAlertErrorReason = action.payload;
         break;
       }
       default:

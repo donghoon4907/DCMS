@@ -71,68 +71,6 @@ const UserCardComponent = props => {
         <div>팔로워 수 : {followerCount}</div>
         <div>팔로잉 수 : {Followings.length}</div>
       </CardFooter>
-      {/* <CardHeader>
-        <div>
-          <span
-            title={
-              isUploadYt === "Y"
-                ? "이미 Youtube에 업로드 되었습니다."
-                : "Youtube에 업로드할 수 있습니다."
-            }
-          >
-            <Youtube
-              onClick={() => onClickUploadVideo(id, isUploadYt === "N")}
-              style={{
-                width: 20,
-                height: 20,
-                fill: isUploadYt === "Y" ? "red" : "lightgray",
-                cursor: isUploadYt === "Y" ? "default" : "cursor"
-              }}
-            />
-          </span>
-        </div>
-        <div title={createdAt}>{createdAt.substring(0, 10)}</div>
-      </CardHeader>
-      <CardThumbnail>
-        <img
-          src={`${process.env.REACT_APP_BACKEND_HOST}/images/${Images[0].src}`}
-          width={"100%"}
-          height={"100%"}
-          alt={"thumbnail"}
-        />
-      </CardThumbnail>
-      <CardBody>
-        <EllipsisText onClick={() => onClickItem(props)}>{title}</EllipsisText>
-        <EllipsisText onClick={() => onClickItem(props)}>
-          {description}
-        </EllipsisText>
-      </CardBody>
-      <CardFooter>
-        <div>
-          <span>
-            {isLike ? (
-              <FillHeart
-                style={{ width: 20, height: 20, fill: "red" }}
-                onClick={() => onClickLikePost({ id, isLike: true })}
-              />
-            ) : (
-              <EmptyHeart
-                style={{ width: 20, height: 20, fill: "white" }}
-                onClick={() => onClickLikePost({ id, isLike: false })}
-              />
-            )}
-          </span>
-          <span className="ml-1 mr-2">{likeCount}</span>
-          <span>
-            <Comment
-              style={{ width: 20, height: 20, fill: "white" }}
-              onClick={onClickComment}
-            />
-          </span>
-          <span className="ml-1 mr-2">{Comments.length}</span>
-        </div>
-        <div className="d-flex justify-content-center align-items-center"></div>
-      </CardFooter> */}
     </CardWrap>
   );
 };

@@ -11,14 +11,10 @@ export const ADD_PROGRAMITEM_FAILURE = "ADD_PROGRAMITEM_FAILURE";
 export const UPDATE_PROGRAMITEM_REQUEST = "UPDATE_PROGRAMITEM_REQUEST";
 export const UPDATE_PROGRAMITEM_SUCCESS = "UPDATE_PROGRAMITEM_SUCCESS";
 export const UPDATE_PROGRAMITEM_FAILURE = "UPDATE_PROGRAMITEM_FAILURE";
-// 목록 초기화
-export const INIT_PROGRAMLIST = "INIT_PROGRAMLIST";
 // 특정 프로그램 활성화
 export const ACTIVE_PROGRAMITEM = "ACTIVE_PROGRAMITEM";
 // 특정 프로그램 비활성화
 export const INACTIVE_PROGRAMITEM = "INACTIVE_PROGRAMITEM";
-// 등록 초기화
-export const INIT_ADDPROGRAM = "INIT_ADDPROGRAM";
 // 연령 등급 입수
 export const GET_AGEGRADELIST_REQUEST = "GET_AGEGRADELIST_REQUEST";
 export const GET_AGEGRADELIST_SUCCESS = "GET_AGEGRADELIST_SUCCESS";
@@ -59,6 +55,7 @@ export default (state = initialState, action) =>
     switch (action.type) {
       case GET_PROGRAMLIST_REQUEST: {
         draft.isGetListLoading = true;
+        draft.isSuccessAddItem = false;
         if (action.payload.lastId === 0) draft.loadedProgram = [];
         break;
       }
@@ -107,14 +104,6 @@ export default (state = initialState, action) =>
       case UPDATE_PROGRAMITEM_FAILURE: {
         draft.isUpdateItemLoading = false;
         draft.updateItemErrorReason = action.payload;
-        break;
-      }
-      case INIT_PROGRAMLIST: {
-        draft.loadedProgram = null;
-        break;
-      }
-      case INIT_ADDPROGRAM: {
-        draft.isSuccessAddItem = false;
         break;
       }
       case GET_AGEGRADELIST_REQUEST: {

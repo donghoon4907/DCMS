@@ -2,7 +2,7 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const Dotenv = require("dotenv-webpack");
 
-const port = 3002;
+const port = 3000;
 
 module.exports = {
   // 환경 설정
