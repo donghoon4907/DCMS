@@ -55,23 +55,17 @@ export const TopMenu = styled.div`
   left: ${(props) => props.theme.asideMenuWidth}px;
   width: ${(props) => window.screen.width - props.theme.asideMenuWidth}px;
   height: 50px;
-  border-bottom: 1px solid #20242b;
 `;
 
 export const Article = styled.article`
-  width: ${(props) => window.screen.width - props.width - 150}px;
-  height: ${window.innerHeight - 200}px;
-  padding-top: 50px;
-  padding-bottom: 50px;
-  padding-left: 80px;
-  padding-right: 80px;
+  position: fixed;
+  top: 50px;
+  left: ${(props) => props.theme.asideMenuWidth}px;
+  width: ${(props) => window.screen.width - props.theme.asideMenuWidth}px;
+  height: calc(100vh - 50px);
+  padding: 50px;
   box-sizing: border-box;
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  overflow-y: auto;
-  border: 1px solid ${(props) => props.theme.cardBorderColor};
-  color: white;
+  overflow: hidden;
 `;
 
 export const SettingRow = styled.div`

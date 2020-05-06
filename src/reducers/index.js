@@ -8,6 +8,7 @@ import cast from "./cast";
 import genre from "./genre";
 import channel from "./channel";
 import youtube from "./youtube";
+import dashboard from "./dashboard";
 
 export default combineReducers({
   common,
@@ -18,5 +19,6 @@ export default combineReducers({
   cast,
   genre,
   channel,
-  youtube
+  youtube,
+  dashboard
 });

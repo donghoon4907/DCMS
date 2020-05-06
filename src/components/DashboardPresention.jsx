@@ -6,7 +6,8 @@ import {
   AsideMenu,
   ContentMenu,
   IconWrap,
-  TopMenu
+  TopMenu,
+  Article
 } from "./DashboardStyledComponent";
 import { Publish, Home, Setting } from "../assets/icons";
 import SetProgramModal from "./SetProgramModalContainer";
@@ -18,6 +19,7 @@ import PublishContainer from "./PublishContainer";
 import PostCommentModal from "./PostCommentModalContainer";
 import SettingContainer from "./SettingContainer";
 import UploadYoutubeModal from "./UploadYoutubeModalContainer";
+import LineChart from "./LineChart";
 
 const DashboardPresentation = ({
   userInfo,
@@ -102,7 +104,7 @@ const DashboardPresentation = ({
               <Popover>
                 {userInfo && userInfo.SendNews.length > 0 ? (
                   userInfo.SendNews.filter(
-                    v => v.PostId && v.type === "regdate"
+                    (v) => v.PostId && v.type === "regdate"
                   ).map((v, idx) => (
                     <Popover.Content
                       key={`alert${idx}`}
@@ -127,7 +129,7 @@ const DashboardPresentation = ({
               <Badge variant="warning" style={{ marginLeft: 5 }}>
                 {userInfo &&
                   userInfo.SendNews.filter(
-                    v => v.PostId && v.type === "regdate"
+                    (v) => v.PostId && v.type === "regdate"
                   ).length}
               </Badge>
             </Button>
@@ -141,6 +143,11 @@ const DashboardPresentation = ({
           </Button>
         </div>
       </TopMenu>
+      {activeMenu === 1 && (
+        <Article>
+          <LineChart />
+        </Article>
+      )}
       {activeMenu === 2 && <PublishContainer />}
       {activeMenu === 3 && <SettingContainer />}
     </ContentMenu>

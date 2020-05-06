@@ -8,10 +8,11 @@ import cast from "./cast";
 import genre from "./genre";
 import channel from "./channel";
 import youtube from "./youtube";
+import dashboard from "./dashboard";
 
 axios.defaults.baseURL = "http://localhost:3001/api";
 
-export default function*() {
+export default function* () {
   yield all([
     call(user),
     call(program),
@@ -20,6 +21,7 @@ export default function*() {
     call(cast),
     call(genre),
     call(channel),
-    call(youtube)
+    call(youtube),
+    call(dashboard)
   ]);
 }

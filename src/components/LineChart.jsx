@@ -11,31 +11,38 @@ import {
 const data = [
   {
     name: "04-07",
-    request: 4000
+    request: 4000,
+    request2: 4000
   },
   {
     name: "04-08",
-    request: 3000
+    request: 3000,
+    request2: 4000
   },
   {
     name: "04-09",
-    request: 2000
+    request: 2000,
+    request2: 4000
   },
   {
     name: "04-10",
-    request: 2780
+    request: 2780,
+    request2: 4000
   },
   {
     name: "04-11",
-    request: 1890
+    request: 1890,
+    request2: 4000
   },
   {
     name: "04-12",
-    request: 2390
+    request: 2390,
+    request2: 4000
   },
   {
     name: "04-13",
-    request: 3490
+    request: 3490,
+    request2: 4000
   }
 ];
 export default class Example extends PureComponent {
@@ -43,9 +50,9 @@ export default class Example extends PureComponent {
   render() {
     return (
       <LineChart
-        width={this.props.width}
-        height={300}
-        data={this.props.data}
+        width={500}
+        height={500}
+        data={data}
         margin={{
           top: 5,
           right: 30,
@@ -58,16 +65,17 @@ export default class Example extends PureComponent {
         <YAxis />
         <Tooltip />
         <Legend />
-        {/* <Line
-          type="monotone"
-          dataKey="pv"
-          stroke="#8884d8"
-          activeDot={{ r: 8 }}
-        /> */}
         <Line
           type="monotone"
-          dataKey={this.props.legendTitle}
-          stroke="#82ca9d"
+          dataKey="request"
+          stroke="#8884d8"
+          activeDot={{ r: 8 }}
+        />
+        <Line
+          type="monotone"
+          dataKey="request2"
+          stroke="#8884d8"
+          activeDot={{ r: 8 }}
         />
       </LineChart>
     );
