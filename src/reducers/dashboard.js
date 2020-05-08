@@ -12,7 +12,7 @@ export const initialState = {
   isLoadPostCountLoading: false, // 포스트 수 가져오기 시도 중 여부
   isLoadFollowCountLoading: false, // 팔로워 수 가져오기 시도 중 여부
   loadedWeekPostCount: null, // 가져온 포스트 수 정보
-  loadedFollowCount: null, // 가져온 팔로워 수 정보
+  loadedWeekFollowCount: null, // 가져온 팔로워 수 정보
   loadedPostCountErrorReason: "", // 목록 가져오기 요청 오류 사유
   loadedFollowCountErrorReason: "" // 등록 요청 오류 사유
 };
@@ -40,7 +40,7 @@ export default (state = initialState, action) =>
       }
       case LOAD_WEEKFOLLOWCOUNT_SUCCESS: {
         draft.isLoadFollowCountLoading = false;
-        draft.loadedFollowCount = action.payload;
+        draft.loadedWeekFollowCount = action.payload;
         break;
       }
       case LOAD_WEEKFOLLOWCOUNT_FAILURE: {

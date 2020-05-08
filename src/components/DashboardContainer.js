@@ -9,7 +9,11 @@ import {
 
 const DashboardContainer = () => {
   const dispatch = useDispatch();
+
   const { userInfo } = useSelector((state) => state.user);
+  const { loadedWeekPostCount, loadedWeekFollowCount } = useSelector(
+    (state) => state.dashboard
+  );
   const {
     isShowAddPgmUi,
     isShowUpdatePgmUi,
@@ -63,6 +67,8 @@ const DashboardContainer = () => {
   return (
     <DashboardPresention
       userInfo={userInfo}
+      loadedWeekPostCount={loadedWeekPostCount}
+      loadedWeekFollowCount={loadedWeekFollowCount}
       activeMenu={activeMenu}
       isShowAddPgmUi={isShowAddPgmUi}
       isShowUpdatePgmUi={isShowUpdatePgmUi}

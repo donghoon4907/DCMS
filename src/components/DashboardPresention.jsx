@@ -23,6 +23,8 @@ import LineChart from "./LineChart";
 
 const DashboardPresentation = ({
   userInfo,
+  loadedWeekPostCount,
+  loadedWeekFollowCount,
   activeMenu,
   isShowAddPgmUi,
   isShowUpdatePgmUi,
@@ -145,7 +147,48 @@ const DashboardPresentation = ({
       </TopMenu>
       {activeMenu === 1 && (
         <Article>
-          <LineChart />
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 20,
+              width: 850,
+              height: 400,
+              background: "rgba(0,0,0,0.2)",
+              padding: 10
+            }}
+          >
+            <h1 style={{ paddingLeft: 70 }}>Weekly</h1>
+            <br />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "start",
+                alignItems: "center"
+              }}
+            >
+              {loadedWeekFollowCount && loadedWeekPostCount && (
+                <LineChart
+                  width={800}
+                  height={300}
+                  followerData={loadedWeekFollowCount}
+                  postData={loadedWeekPostCount}
+                  category={[
+                    {
+                      text: "등록한 포스트 수",
+                      label: "followerCount",
+                      strokeColor: "#67B7DC"
+                    },
+                    {
+                      text: "추가된 팔로워 수",
+                      label: "postCount",
+                      strokeColor: "#6771DC"
+                    }
+                  ]}
+                />
+              )}
+            </div>
+          </div>
         </Article>
       )}
       {activeMenu === 2 && <PublishContainer />}

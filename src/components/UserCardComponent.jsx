@@ -12,14 +12,14 @@ import {
   REMOVE_FOLLOWING_REQUEST
 } from "../reducers/user";
 
-const UserCardComponent = props => {
+const UserCardComponent = (props) => {
   const dispatch = useDispatch();
   const { id, Images, userId, email, Posts, Followers, Followings } = props;
 
-  const { userInfo } = useSelector(state => state.user);
+  const { userInfo } = useSelector((state) => state.user);
 
   const [isFollowing, setIsFollowing] = useState(
-    userInfo.Followings.some(v => v.id == id)
+    userInfo.Followings.some((v) => v.id == id)
   );
   const [followerCount, setFollowerCount] = useState(Followers.length);
 
